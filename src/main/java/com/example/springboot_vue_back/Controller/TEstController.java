@@ -1,9 +1,7 @@
 package com.example.springboot_vue_back.Controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 //          @Controller//返回页面 因为前后分离 所以不用
@@ -14,4 +12,9 @@ public class TEstController {
     public String hello(){
         return "helloword!";
     }
+
+ @PostMapping("/hello1")
+    public String helo1(String name){
+        return "hello1"+name;
+ }
 }

@@ -1,0 +1,18 @@
+GET http://localhost:8080/hello
+Accept: application/json
+
+#将返回值写出
+> {%
+ client.test("test-hello",function (){
+     client.log("/hello测试");
+     client.log(response.body);
+ })
+ %}
+###
+#带参数的请求
+POST http://localhost:8080/hello1
+Content-Type: application/x-www-form-urlencoded
+
+name=czh
+
+###
