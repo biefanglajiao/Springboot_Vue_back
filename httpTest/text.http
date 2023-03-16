@@ -16,3 +16,8 @@ Content-Type: application/x-www-form-urlencoded
 name=czh
 
 ###
+
+GET http://localhost:8080/list
+Accept: application/json
+
+###

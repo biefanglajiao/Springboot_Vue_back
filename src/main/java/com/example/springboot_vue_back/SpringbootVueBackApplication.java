@@ -1,5 +1,6 @@
 package com.example.springboot_vue_back;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 //@ComponentScan({"com.example","com.xxx"})//包扫描接口，方便对保证扫描的管理
 @SpringBootApplication
+@MapperScan("com.example.springboot_vue_back.Mapper")
 public class SpringbootVueBackApplication {
 private static final Logger LOG = LoggerFactory.getLogger(SpringbootVueBackApplication.class);
     public static void main(String[] args){
