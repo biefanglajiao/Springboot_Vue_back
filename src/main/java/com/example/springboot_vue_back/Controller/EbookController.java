@@ -1,6 +1,7 @@
 package com.example.springboot_vue_back.Controller;
 
 import com.example.springboot_vue_back.domain.Ebook;
+import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.service.EbookService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,10 @@ public class EbookController {
 private EbookService ebookService;
 
  @GetMapping("/list")
-    public List<Ebook> list(){
-        return ebookService.list();
+    public ComminResp list(){
+     ComminResp<List<Ebook>> objectComminResp = new ComminResp<>();
+     List<Ebook> list=ebookService.list();
+    objectComminResp.setContent(list);
+    return  objectComminResp;
  }
 }
