@@ -1,4 +1,5 @@
 <!--将header写成自定义组件-->
+<template>
 <a-layout-header class="header">
 <div class="logo"/>
 <a-menu
@@ -12,7 +13,7 @@
   <a-menu-item key="3">nav 3</a-menu-item>
 </a-menu>
 </a-layout-header>
-
+</template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 

@@ -1,4 +1,4 @@
-<template>
+<template xmlns="" xmlns="" xmlns="">
   <a-layout-content style="padding: 0 50px">
 
     <a-layout style="padding: 24px 0; background: #fff">
@@ -13,7 +13,7 @@
             <template #title>
                 <span>
                   <user-outlined/>
-                  subnav 1
+                  subnav 11
                 </span>
             </template>
             <a-menu-item key="1">option1</a-menu-item>
@@ -56,12 +56,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+
 
 export default defineComponent({
   name: 'Home',
-  components: {
-    HelloWorld,
-  },
+
 });
 </script>
