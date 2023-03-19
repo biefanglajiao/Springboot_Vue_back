@@ -1,4 +1,4 @@
-<template >
+<template>
   <a-layout-content style="padding: 0 50px">
 
     <a-layout style="padding: 24px 0; background: #fff">
@@ -47,6 +47,9 @@
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+        <pre>
+  {{ ebooks }} {{books1}}
+</pre>
         Content
       </a-layout-content>
     </a-layout>
@@ -54,16 +57,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent, onMounted, ref, reactive,toRef} from 'vue';
 import axios from "axios";
 
 export default defineComponent({
   name: 'Home',
-  setup(){
+  setup() {
     console.log("setup")
-  axios.get("http://localhost:8080/ebook/list?name=教程").then((response)=>{
-    console.log(response)
-  })
-}
+    const ebooks = ref();
+    const ebooks1 = reactive({books: []});
+
+
+    onMounted(() => {//生命周期函数
+      console.log("onMounted")
+      axios.get("http://localhost:8080/ebook/list?name=教程").then((response) => {//初始化方法
+        const data = response.data;
+        ebooks.value = data.content;
+        ebooks1.books = data.content;
+        console.log(response)
+      });
+    })
+
+
+    return {
+      ebooks,
+      books1: toRef (ebooks1, "books")
+    }
+  }
 });
 </script>
