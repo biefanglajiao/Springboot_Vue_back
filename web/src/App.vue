@@ -1,8 +1,8 @@
 <template>
   <a-layout>
 
-    <the-header>1111</the-header>
-    <router-view/>
+    <the-header>11111</the-header>
+    <router-view></router-view>
     <the-footer></the-footer>
   </a-layout>
 </template>
