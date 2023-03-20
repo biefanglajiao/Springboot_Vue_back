@@ -8,6 +8,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/***
+ *  过滤器 用于记录日志 用于记录请求的地址  请求的时间  请求的耗时
+ */
 @Component//将logFilter注入到spring容器中
 public class logFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(logFilter.class);
