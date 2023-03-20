@@ -13,3 +13,22 @@ console.log('环境',process.env.NODE_ENV);
 
 //改变axios的默认配置 以后所有的axios请求都会带上这个配置baseURL  和xue的不一样
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;
+
+/***
+ * axios拦截器
+ */
+axios.interceptors.request.use(function (config) {
+    console.log("请求拦截器",config);
+    return config;
+},
+function (error) {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+    console.log("响应拦截器",response);
+    return response;
+},
+function (error) {
+    console.log("响应错误",error);
+    return Promise.reject(error);
+});
