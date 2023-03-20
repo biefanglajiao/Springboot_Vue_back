@@ -1,6 +1,6 @@
 
 
-GET http://localhost:8080/ebook/list?name=教程
+GET http://localhost:8080/ebook/list?name
 Accept: application/json
 
 ###
