@@ -1,6 +1,6 @@
 package com.example.springboot_vue_back.req;
 
-public class EbookReq {//将请求参数封装成一个类
+public class EbookReq  extends PageReq{//将请求参数封装成一个类
     private Long id;
 
     private String name;

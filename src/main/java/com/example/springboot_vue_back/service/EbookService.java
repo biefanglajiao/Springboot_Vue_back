@@ -7,6 +7,7 @@ import com.example.springboot_vue_back.domain.Ebook;
 import com.example.springboot_vue_back.domain.EbookExample;
 import com.example.springboot_vue_back.req.EbookReq;
 import com.example.springboot_vue_back.resp.EbookResp;
+import com.example.springboot_vue_back.resp.PageResp;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 
 import com.github.pagehelper.PageHelper;
@@ -25,9 +26,9 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public List<EbookResp> list(EbookReq req) {
+    public PageResp<EbookResp> list(EbookReq req) {
 //        分页查询=》查询总数+查当前页数据
-        PageHelper.startPage(1,3);//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
+        PageHelper.startPage(req.getPage(),req.getSize());//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
 
 
 
@@ -50,10 +51,17 @@ public class EbookService {
 //            ebookRespList.add(ebookResp);
 //        }
 
+
         //将Ebook类型转为EbookResp类型 使用copyutils工具类
         List<EbookResp> ebookRespList = CopyUtils.copyList(ebookList, EbookResp.class);
-        return  ebookRespList;
 
+
+        PageResp<EbookResp> pageResp = new PageResp<>();
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(ebookRespList);
+
+
+        return pageResp;
     }
 
 }

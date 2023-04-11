@@ -4,6 +4,7 @@ import com.example.springboot_vue_back.domain.Ebook;
 import com.example.springboot_vue_back.req.EbookReq;
 import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.resp.EbookResp;
+import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.service.EbookService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,8 @@ private EbookService ebookService;
 
  @GetMapping("/list")//模糊查询书籍
     public ComminResp list(EbookReq req){
-     ComminResp<List<EbookResp>> objectComminResp = new ComminResp<>();
-     List<EbookResp> list=ebookService.list(req);
+     ComminResp<PageResp<EbookResp>> objectComminResp = new ComminResp<>();
+     PageResp<EbookResp> list=ebookService.list(req);
     objectComminResp.setContent(list);
     return  objectComminResp;
 
