@@ -8,6 +8,9 @@ import com.example.springboot_vue_back.domain.EbookExample;
 import com.example.springboot_vue_back.req.EbookReq;
 import com.example.springboot_vue_back.resp.EbookResp;
 import com.fasterxml.jackson.databind.util.BeanUtil;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,11 @@ public class EbookService {
     private EbookMapper ebookMapper;
 
     public List<EbookResp> list(EbookReq req) {
+//        分页查询=》查询总数+查当前页数据
+        PageHelper.startPage(1,3);//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
+
+
+
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -30,6 +38,9 @@ public class EbookService {
         }
 
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
+
+        PageInfo<Ebook> pageInfo=new PageInfo<>(ebookList);
+        pageInfo.getTotal();//返回总条数  配合前端可以通过知道总条数查询分页
 
 //        //将Ebook类型转为EbookResp类型
 //        List<EbookResp> ebookRespList =new ArrayList<>();
