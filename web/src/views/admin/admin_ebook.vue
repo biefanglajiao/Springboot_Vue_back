@@ -18,7 +18,7 @@
           </template>
      <template v-slot:action="{text,record}">
         <a-space size="small">
-          <a-button type="primary">
+          <a-button type="primary" @click="edit">
             编辑
           </a-button>
           <a-button type="danger">
@@ -32,6 +32,17 @@
       </a-layout-content>
     </a-layout>
   </a-layout-content>
+  <a-modal title="电子书表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
+    <template #footer>
+      <a-button key="back" @click="handleCancel">Return</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+    </template>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -86,7 +97,23 @@ export default defineComponent({
         slots:{customRender:'action'}
       }
     ];
+    /*****
+     * @方法描述: 编辑表单的提交
+     */
+    const modalLoading = ref<boolean>(false);
+    const modalVisible = ref<boolean>(false);
 
+    const handleModalOk = () => {
+     modalLoading.value=true;
+      setTimeout(() => {
+        modalLoading.value = false;
+        modalVisible.value = false;
+      }, 2000);
+    };
+
+    const edit = () => {
+    modalVisible.value = true;
+    }
 
     /***
      * @方法描述: 数据查询方法
@@ -136,7 +163,13 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+
+    //   编辑相关
+      modalLoading,
+      modalVisible,
+      handleModalOk,
+      edit
     }
   }
 });
