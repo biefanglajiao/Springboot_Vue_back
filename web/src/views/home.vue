@@ -52,7 +52,7 @@
           <template #footer>
             <div>
               <b>电子书籍</b>
-              ---常兆海
+              ---常兆海zzz
             </div>
           </template>
           <template #renderItem="{ item }">
@@ -85,23 +85,23 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
-
-const listData: Record<string, string>[] = [];
-
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://joeschmoe.io/api/v1/random',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+//测试假数据
+// const listData: Record<string, string>[] = [];
+//
+// for (let i = 0; i < 23; i++) {
+//   listData.push({
+//     href: 'https://www.antdv.com/',
+//     title: `ant design vue part ${i}`,
+//     avatar: 'https://joeschmoe.io/api/v1/random',
+//     description:
+//         'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+//     content:
+//         'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+//   });
+// }
 export default defineComponent({
   name: 'Home',
 
@@ -113,24 +113,34 @@ export default defineComponent({
   setup() {
     console.log("setup")
     const ebooks = ref();
-    const ebooks1 = reactive({books: []});
-
-
+    /***
+     * @分页：暂时不用
+     * todo 分页
+     */
+    // const pagination = {//分页
+    //   onChange: (page: number) => {
+    //     console.log(page);
+    //   },
+    //   current: 1,
+    //   total:0,
+    //   pageSize: 100,
+    // };
     onMounted(() => {//生命周期函数
       console.log("onMounted")
-      axios.get("/ebook/list").then((response) => {//初始化方法
+      axios.get("/ebook/list", {
+        params: {
+          page: 1,
+          size: 100,
+        }
+      }).then((response) => {//初始化方法
         const data = response.data;
-        ebooks.value = data.content;
-        ebooks1.books = data.content;
+        ebooks.value = data.content.list;
         console.log(response)
+
+
       });
     })
-    const pagination = {//分页
-      onChange: (page: number) => {
-        console.log(page);
-      },
-      pageSize: 6,
-    };
+
     const actions: Record<string, string>[] = [
       {type: 'StarOutlined', text: '156'},
       {type: 'LikeOutlined', text: '156'},
@@ -139,9 +149,7 @@ export default defineComponent({
 
     return {
       ebooks,
-      books1: toRef(ebooks1, "books"),
-      listData,
-      pagination,
+      // pagination,
       actions,
     }
   }
