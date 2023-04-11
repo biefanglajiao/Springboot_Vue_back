@@ -13,7 +13,7 @@
                  @change="handleTableChange"
         >
           <template #cover="{ text:cover }">
-            <img v-if="cover" :src="cover" alt="avatar">
+            <img class="img_xhz" v-if="cover" :src="cover" alt="avatar">
 <!--            //todo 图片的处理-->
           </template>
      <template v-slot:action="{text,record}">
@@ -141,3 +141,14 @@ export default defineComponent({
   }
 });
 </script>
+<style scoped>
+/*scoped 作用  限制样式只在当前组件生效*/
+.img_xhz {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px 0;
+
+
+}</style>
