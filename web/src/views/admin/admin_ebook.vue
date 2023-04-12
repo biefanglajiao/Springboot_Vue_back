@@ -167,6 +167,12 @@ export default defineComponent({
     /***
      * @方法描述: 删除按钮方法
      */
+        //q: 这段代码的详细含义？
+        //a: 这段代码是删除按钮的方法，点击删除按钮后，会弹出一个确认框，确认后会调用delet方法，delet方法会调用axios的delete方法，删除数据，然后重新加载列表
+        //q:delet方法里的参数是什么意思？
+        //a:delet方法里的参数是id，id是数据库中的主键，用来唯一标识一条数据
+        //q: id:string 是什么意思？
+
     const delet = (id: number) => {
       axios.delete("/ebook/delete/"+id).then((response) => {
 

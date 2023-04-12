@@ -1,6 +1,8 @@
 package com.example.springboot_vue_back.domain;
 
 public class Ebook {
+
+
     private Long id;
 
     private String name;

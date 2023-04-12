@@ -71,6 +71,7 @@ public class EbookService {
             //不存在 新增
 
             ebook.setId( snowFlake.nextId());//将生成的雪花算法赋给id
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+ebook.getId());
             //文档 阅读 点赞数  初始默认0
             ebook.setDocCount(0);
             ebook.setViewCount(0);

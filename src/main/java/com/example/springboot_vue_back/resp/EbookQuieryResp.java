@@ -1,6 +1,10 @@
 package com.example.springboot_vue_back.resp;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class EbookQuieryResp {//EbookResp为返回的参数封装 ，因为没有啥不能展示的所以和Ebook一样
+    @JsonSerialize(using = ToStringSerializer.class)//将Long类型转换为String类型传到前端（前端传long会数据精度丢失，但不知道为啥前端可以不做处理返回来）https://www.cnblogs.com/lilylife/p/17296247.html
     private Long id;
 
     private String name;
