@@ -5,6 +5,9 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+        <p> <a-button type="primary" @click="add()" size="large">
+         新增
+        </a-button></p>
         <a-table :columns="columns"
                  :data-source="ebooks"
                  :row-key="record => record.id"
@@ -131,10 +134,21 @@ export default defineComponent({
 
       });
     };
-
+    /***
+     *@方法描述: 单击编辑按钮方法
+     */
     const edit = (record: any) => {
       modalVisible.value = true;
       ebook.value=record;
+      console.log(ebook.value);
+    }
+    /***
+     *@方法描述: 单击新增按钮方法
+     */
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value= {};
+      ebook.value.cover="url地址";
       console.log(ebook.value);
     }
 
@@ -182,18 +196,20 @@ export default defineComponent({
 
 
     return {
+      //列表
       ebooks,
       pagination,
       columns,
       loading,
       handleTableChange,
 
-      //   编辑相关
+      //   编辑表格相关
       modalLoading,
       modalVisible,
       ebook,
       handleModalOk,
-      edit
+      edit,
+      add,
     }
   }
 });

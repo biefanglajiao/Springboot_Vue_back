@@ -3,6 +3,7 @@ package com.example.springboot_vue_back.service;
 import com.example.springboot_vue_back.Mapper.EbookMapper;
 
 import com.example.springboot_vue_back.Utils.CopyUtils;
+import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Ebook;
 import com.example.springboot_vue_back.domain.EbookExample;
 import com.example.springboot_vue_back.req.EbookQueryReq;
@@ -12,6 +13,7 @@ import com.example.springboot_vue_back.resp.PageResp;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -22,6 +24,9 @@ import java.util.List;
 public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
+
+    @Autowired
+    private SnowFlake snowFlake;
 
     public PageResp<EbookQuieryResp> list(EbookQueryReq req) {
 //        分页查询=》查询总数+查当前页数据
@@ -64,6 +69,12 @@ public class EbookService {
         Ebook ebook= CopyUtils.copy(req,Ebook.class);//将请求参数更新为实体
         if (ObjectUtils.isEmpty(req.getId())){//判断是否存在
             //不存在 新增
+
+            ebook.setId( snowFlake.nextId());//将生成的雪花算法赋给id
+            //文档 阅读 点赞数  初始默认0
+            ebook.setDocCount(0);
+            ebook.setViewCount(0);
+            ebook.setVoteCount(0);
             ebookMapper.insert(ebook);
         }else {
             //更新
