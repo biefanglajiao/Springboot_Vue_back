@@ -33,4 +33,12 @@ public class EbookController {
 
         return objectComminResp;
     }
+
+    @DeleteMapping("/delete/{id}")//保存书籍  一般保存类用post
+    public ComminResp delete(@PathVariable long id) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+        ComminResp objectComminResp = new ComminResp<>();
+        ebookService.delete(id);
+
+        return objectComminResp;
+    }
 }

@@ -5,9 +5,11 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <p> <a-button type="primary" @click="add()" size="large">
-         新增
-        </a-button></p>
+        <p>
+          <a-button type="primary" @click="add()" size="large">
+            新增
+          </a-button>
+        </p>
         <a-table :columns="columns"
                  :data-source="ebooks"
                  :row-key="record => record.id"
@@ -24,7 +26,8 @@
               <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
-              <a-button type="danger">
+              <a-button type="danger" @click="delet(record.id)">
+                <!--                delete是关键字 -->
                 删除
               </a-button>
             </a-space>
@@ -38,7 +41,7 @@
   <a-modal title="电子书表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
     <a-form :model="ebook" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="ebook.name"/>
       </a-form-item>
       <a-form-item label="封面">
         <a-input v-model:value="ebook.cover"/>
@@ -122,11 +125,11 @@ export default defineComponent({
 
       axios.post("/ebook/save", ebook.value).then((response) => {
         const data = response.data;//data==common,resp
-        if (data.success){
+        if (data.success) {
           modalLoading.value = false;
           modalVisible.value = false;
         }
-      //重新加载列表
+        //重新加载列表
         handleQuery({
           page: pagination.value.current,
           size: pagination.value.pageSize
@@ -139,7 +142,7 @@ export default defineComponent({
      */
     const edit = (record: any) => {
       modalVisible.value = true;
-      ebook.value=record;
+      ebook.value = record;
       console.log(ebook.value);
     }
     /***
@@ -147,9 +150,25 @@ export default defineComponent({
      */
     const add = () => {
       modalVisible.value = true;
-      ebook.value= {};
-      ebook.value.cover="url地址";
+      ebook.value = {};
+      ebook.value.cover = "url地址";
       console.log(ebook.value);
+    }
+    /***
+     * @方法描述: 删除按钮方法
+     */
+    const delet = (id: number) => {
+      axios.delete("/ebook/delete/"+id).then((response) => {
+
+        const data = response.data;
+
+
+        //重新加载列表
+        handleQuery({
+          page: pagination.value.current,
+          size: pagination.value.pageSize
+        });
+      });
     }
 
     /***
@@ -184,6 +203,8 @@ export default defineComponent({
       });
 
     };
+
+
     /**
      * @方法描述: 初始进入页面就查一次数据
      */
@@ -210,6 +231,7 @@ export default defineComponent({
       handleModalOk,
       edit,
       add,
+      delet,
     }
   }
 });
