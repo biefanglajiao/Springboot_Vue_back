@@ -1,6 +1,6 @@
 package com.example.springboot_vue_back.resp;
 
-public class EbookResp {//EbookResp为返回的参数封装 ，因为没有啥不能展示的所以和Ebook一样
+public class EbookQuieryResp {//EbookResp为返回的参数封装 ，因为没有啥不能展示的所以和Ebook一样
     private Long id;
 
     private String name;
