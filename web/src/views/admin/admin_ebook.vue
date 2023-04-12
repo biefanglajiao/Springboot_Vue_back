@@ -26,10 +26,20 @@
               <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
-              <a-button type="danger" @click="delet(record.id)">
-                <!--                delete是关键字 -->
-                删除
-              </a-button>
+<!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
+              <a-popconfirm
+                  title="删除后不可回复，是否删除?"
+                  ok-text="是"
+                  cancel-text="否"
+                  @confirm="delet(record.id)"
+
+              >
+                <a-button type="danger" >
+                  <!--                delete是关键字  @click="delet(record.id)-->
+                  删除
+                </a-button>
+              </a-popconfirm>
+
             </a-space>
           </template>
         </a-table>
