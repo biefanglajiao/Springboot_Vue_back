@@ -10,6 +10,7 @@ import com.example.springboot_vue_back.service.EbookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/ebook")
@@ -19,7 +20,7 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")//模糊查询书籍
-    public ComminResp list(EbookQueryReq req) {
+    public ComminResp list(@Valid EbookQueryReq req) {
         ComminResp<PageResp<EbookQuieryResp>> objectComminResp = new ComminResp<>();
         PageResp<EbookQuieryResp> list = ebookService.list(req);
         objectComminResp.setContent(list);
@@ -27,7 +28,7 @@ public class EbookController {
     }
 
     @PostMapping("/save")//保存书籍  一般保存类用post
-    public ComminResp save(@RequestBody EbookSaveReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+    public ComminResp save(@Valid @RequestBody EbookSaveReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
         ComminResp objectComminResp = new ComminResp<>();
         ebookService.save(req);
 
@@ -35,7 +36,7 @@ public class EbookController {
     }
 
     @DeleteMapping("/delete/{id}")//保存书籍  一般保存类用post
-    public ComminResp delete(@PathVariable long id) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+    public ComminResp delete(@PathVariable long id) {//@PathVariable 用于获取url中的数据
         ComminResp objectComminResp = new ComminResp<>();
         ebookService.delete(id);
 

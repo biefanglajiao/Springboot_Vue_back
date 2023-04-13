@@ -2,6 +2,7 @@ package com.example.springboot_vue_back.aspect;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyPreFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -60,8 +61,12 @@ private static final Logger LOG = LoggerFactory.getLogger(LogAspect.class);
         PropertyPreFilters filter = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filter.addFilter();
         excludeFilter.addExcludes(excludeFields);
-        LOG.info("请求参数: {}", com.alibaba.fastjson.JSON.toJSONString(arguments,excludeFilter));
-
+        LOG.info("请求参数: {}", com.alibaba.fastjson.JSON.toJSONString(arguments,excludeFilter, SerializerFeature.IgnoreNonFieldGetter));
+        /****\
+         * @坑描述：  在这个方法 toJSONString 如果没有SerializerFeature.IgnoreNonFieldGetter这个参数，会在参数校验的捕获BindEXception中 出现bug
+         * @参数含义： SerializerFeature.IgnoreNonFieldGetter 这个参数的作用是：如果一个对象中有一个属性，但是这个属性没有对应的get方法，那么在转换成json的时候，这个属性就会被忽略掉
+         * @解绝参考文章： https://blog.csdn.net/qq_30546099/article/details/129287020?spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-4-129287020-blog-122999083.235%5Ev28%5Epc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-4-129287020-blog-122999083.235%5Ev28%5Epc_relevant_recovery_v2&utm_relevant_index=5
+          */
 
     }
 
