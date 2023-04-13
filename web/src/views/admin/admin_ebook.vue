@@ -48,6 +48,8 @@
       </a-layout-content>
     </a-layout>
   </a-layout-content>
+  //Q::confirm-loading的含义
+  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表
   <a-modal title="电子书表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
     <a-form :model="ebook" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
       <a-form-item label="名称">
@@ -74,6 +76,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
+import {message} from "ant-design-vue";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -81,7 +84,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 2,
+      pageSize: 5,
       total: 0
     });
     const loading = ref(false);
@@ -134,16 +137,18 @@ export default defineComponent({
       modalLoading.value = true;
 
       axios.post("/ebook/save", ebook.value).then((response) => {
+        modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
         if (data.success) {
-          modalLoading.value = false;
-          modalVisible.value = false;
+          modalVisible.value = false;//关闭视图
+          //重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        } else {
+          message.error(data.message);
         }
-        //重新加载列表
-        handleQuery({
-          page: pagination.value.current,
-          size: pagination.value.pageSize
-        });
 
       });
     };
@@ -162,7 +167,7 @@ export default defineComponent({
       modalVisible.value = true;
       ebook.value = {};
       ebook.value.cover = "url地址";
-      console.log(ebook.value);
+
     }
     /***
      * @方法描述: 删除按钮方法
@@ -200,11 +205,15 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data.content.list;
+        if (data.success) {
+          ebooks.value = data.content.list;
 
-        //重置分页按钮
-        pagination.value.current = params.page;
-        pagination.value.total = data.content.total;
+          //重置分页按钮
+          pagination.value.current = params.page;
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message);
+        }
       });
     };
 
