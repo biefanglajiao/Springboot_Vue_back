@@ -47,8 +47,9 @@
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="ebooks"
+        <a-list item-layout="vertical" size="large" :data-source="ebooks"
                 :grid="{ gutter:20 , column : 3}">
+<!--          :pagination="pagination"   分页属性  暂时不用先-->
           <template #footer>
             <div>
               <b>电子书籍</b>

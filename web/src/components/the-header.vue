@@ -12,7 +12,10 @@
     <router-link to="/">首页</router-link>
     </a-menu-item>
   <a-menu-item key="admin_book">
-    <router-link to="/adimin/ebook">电子书管理</router-link>
+    <router-link to="/admin/ebook">电子书管理</router-link>
+   </a-menu-item>
+  <a-menu-item key="admin_catepory">
+    <router-link to="/admin/category">分类管理</router-link>
    </a-menu-item>
   <a-menu-item key="about">
     <router-link to="/about">关于我们</router-link>

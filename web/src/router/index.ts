@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/home.vue'//非惰性 全局加载、
+import Home from '../views/home.vue'
+
+//非惰性 全局加载、
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,10 +18,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "about" */ '../views/about.vue')
   },
   {
-    path: '/adimin/ebook',
-    name: 'AdiminEbook',
+    path: '/admin/ebook',
+    name: 'AdminEbook',
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_ebook.vue')
-  }
+  } ,
+  {
+    path: '/admin/category',
+    name: 'AdminCategory',
+    component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_category.vue')
+  },
+// 非惰性 全局加载方式实现
+// import AdminCategory from "@/views/admin/admin_category.vue";
+//   {
+//     path: '/admin/category',
+//     name: 'AdminCategory',
+//     component: AdminCategory,
+//   }
+
+
 ]
 
 const router = createRouter({
