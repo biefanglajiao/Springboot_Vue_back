@@ -1,5 +1,6 @@
 package com.example.springboot_vue_back.req;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class EbookSaveReq {

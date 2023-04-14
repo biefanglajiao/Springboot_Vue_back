@@ -20,7 +20,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/list")//模糊查询书籍
-    public ComminResp list(@Valid CategoryQueryReq req) {
+    public ComminResp list( CategoryQueryReq req) {
         ComminResp<PageResp<CategoryQueryResp>> objectComminResp = new ComminResp<>();
         PageResp<CategoryQueryResp> list = categoryService.list(req);
         objectComminResp.setContent(list);

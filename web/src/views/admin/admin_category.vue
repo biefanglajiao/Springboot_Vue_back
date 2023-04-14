@@ -92,7 +92,7 @@ export default defineComponent({
   setup() {
     const param = ref();
     param.value = {};
-    const categorys = ref();
+
     const loading = ref(false);
     const columns = [
       {
@@ -173,21 +173,46 @@ export default defineComponent({
         handleQuery();
       });
     }
+    /**
+     * @方法描述: 存放普通的分类数据
+     */
+    const categorys = ref();
+    /***
+     * @方法描述: 存放经过树形结构处理的分类树
+     * @变量categoryslevel解释：一级分类树，children属性时二级分类
+     *                           [{
+     *                             id:"",
+     *                             name:"",
+     *                             chileren:[{
+     *                                id:"",
+     *                             name:"",
+     *                             }]
+     *                           }
+     * 以此类推
+     * 对这个数据处理以后会带动categorys发生改变  所以不用返回这个 直接返回categorys就行  写出来时方便理解
+     */
+    const categoryslevel = ref();
     /***
      * @方法描述: 数据查询方法
+     * @param params
      */
     const handleQueryByname = (params: any) => {
       loading.value = true;
       axios.get("/category/list", {
         params: {
-          name: param.value.name,
+          name: params,
         }
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        if (data.success) {
-        categorys.value = data.content.list;
-        } else {
+        if (data.success&&(params==null||params=="")) {
+          categorys.value = data.content.list;
+          categoryslevel.value =[];
+          categorys.value=Tool.array2Tree(categorys.value,0 );
+         }else  if (data.success&&params!=null) {
+          categorys.value = data.content.list;
+        }
+        else {
           message.error(data.message);
         }
       });
@@ -202,11 +227,16 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           categorys.value = data.content;
+          console.log("初始数据"+categorys.value);
+          categoryslevel.value =[];
+          categorys.value=Tool.array2Tree(categorys.value,0 );
+          console.log("树形结构数据"+categoryslevel.value);
         } else {
           message.error(data.message);
         }
       });
     };
+
 
 
     /**
@@ -226,6 +256,7 @@ export default defineComponent({
       loading,
       handleQuery,
       handleQueryByname,
+
 
       //   编辑表格相关
       modalLoading,

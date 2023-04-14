@@ -1,5 +1,7 @@
 package com.example.springboot_vue_back.req;
 
+import javax.validation.constraints.NotNull;
+
 public class EbookQueryReq extends PageReq{//将请求参数封装成一个类
     private Long id;
 
