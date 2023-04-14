@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class CategorySaveReq {
     private Long id;
-
+@NotNull(message = "父级分类不能为空")
     private Long parent;
 @NotNull(message = "名称不能为空")
     private String name;
