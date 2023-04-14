@@ -195,6 +195,7 @@ export default defineComponent({
     /***
      * @方法描述: 数据查询方法
      * @param params
+     * todo 夫分类的选择bug   默认父分类应该时0 或者主分类的id
      */
     const handleQueryByname = (params: any) => {
       loading.value = true;
