@@ -5,7 +5,8 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-form layout="inline " :model="param" >
+        <a-form layout= "inline" :model="param" >
+          <a-form-item>
         <a-space  direction="vertical">
         <a-input-search
             v-model:value="param.name"
@@ -14,11 +15,14 @@
             @search="handleQuery({page:1,size:pagination.pageSize})"
         />
         </a-space>
+          </a-form-item>
+          <a-form-item>
         <p>
         <a-button type="primary" @click="add()">
             新增
           </a-button>
         </p>
+          </a-form-item>
         </a-form>
         <a-table :columns="columns"
                  :data-source="ebooks"
