@@ -5,9 +5,13 @@ import com.example.springboot_vue_back.Utils.CopyUtils;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Category;
 import com.example.springboot_vue_back.domain.CategoryExample;
+import com.example.springboot_vue_back.domain.Ebook;
+import com.example.springboot_vue_back.domain.EbookExample;
 import com.example.springboot_vue_back.req.CategoryQueryReq;
 import com.example.springboot_vue_back.req.CategorySaveReq;
+import com.example.springboot_vue_back.req.EbookQueryReq;
 import com.example.springboot_vue_back.resp.CategoryQueryResp;
+import com.example.springboot_vue_back.resp.EbookQuieryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -37,18 +41,49 @@ public class CategoryService {
         return categoryRespList;
     }
 
+//    public PageResp<CategoryQueryResp> list(CategoryQueryReq req) {
+////        分页查询=》查询总数+查当前页数据
+//        PageHelper.startPage(req.getPage(), req.getSize());//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
+//
+//
+//        CategoryExample categoryExample = new CategoryExample();
+//        categoryExample.setOrderByClause("sort asc");//根据sort字段升序排列
+//       CategoryExample.Criteria criteria = categoryExample.createCriteria();
+//        if (!ObjectUtils.isEmpty(req.getName())) {
+//            criteria.andNameLike("%" + req.getName() + "%");//createCriteria()相当于while
+//        }
+//        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+//
+//        PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
+//        pageInfo.getTotal();//返回总条数  配合前端可以通过知道总条数查询分页
+//
+////        //将Category类型转为CategoryResp类型
+////        List<CategoryResp> categoryRespList =new ArrayList<>();
+////        for (Category category : categoryList) {
+////            CategoryResp categoryResp = new CategoryResp();
+////            BeanUtils.copyProperties(category,categoryResp);
+////            categoryRespList.add(categoryResp);
+////        }
+//
+//        //将Category类型转为CategoryResp类型 使用copyutils工具类
+//        List<CategoryQueryResp> categoryRespList = CopyUtils.copyList(categoryList, CategoryQueryResp.class);
+//
+//        PageResp<CategoryQueryResp> pageResp = new PageResp<>();
+//        pageResp.setTotal(pageInfo.getTotal());
+//        pageResp.setList(categoryRespList);
+//
+//        return pageResp;
+//    }
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req) {
-//        分页查询=》查询总数+查当前页数据
-        PageHelper.startPage(req.getPage(), req.getSize());//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
-
-
-        CategoryExample categoryExample = new CategoryExample();
+       CategoryExample categoryExample=new CategoryExample();
         categoryExample.setOrderByClause("sort asc");//根据sort字段升序排列
+        CategoryExample.Criteria criteria = categoryExample.createCriteria();
+        if (!ObjectUtils.isEmpty(req.getName())) {
+            criteria.andNameLike("%" + req.getName() + "%");//createCriteria()相当于while
+        }
         List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
-
         PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
         pageInfo.getTotal();//返回总条数  配合前端可以通过知道总条数查询分页
-
 //        //将Category类型转为CategoryResp类型
 //        List<CategoryResp> categoryRespList =new ArrayList<>();
 //        for (Category category : categoryList) {

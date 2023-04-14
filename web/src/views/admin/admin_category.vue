@@ -12,7 +12,7 @@
                   v-model:value="param.name"
                   placeholder="名称"
                   enter-button
-                  @search="handleQuery()"
+                  @search="handleQueryByname(param.name)"
               />
             </a-space>
           </a-form-item>
@@ -34,10 +34,7 @@
         >
           <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
           <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
-          <template #cover="{ text:cover }">
-            <img class="img_xhz" v-if="cover" :src="cover" alt="avatar">
-            <!--            //todo 图片的处理-->
-          </template>
+
           <template v-slot:action="{text,record}">
             <a-space size="small">
               <a-button type="primary" @click="edit(record)">
@@ -176,9 +173,27 @@ export default defineComponent({
         handleQuery();
       });
     }
-
     /***
      * @方法描述: 数据查询方法
+     */
+    const handleQueryByname = (params: any) => {
+      loading.value = true;
+      axios.get("/category/list", {
+        params: {
+          name: param.value.name,
+        }
+      }).then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+        categorys.value = data.content.list;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+    /***
+     * @方法描述: 数据获取方法
      */
     const handleQuery = () => {
       loading.value = true;
@@ -210,6 +225,7 @@ export default defineComponent({
       columns,
       loading,
       handleQuery,
+      handleQueryByname,
 
       //   编辑表格相关
       modalLoading,
