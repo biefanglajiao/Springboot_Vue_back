@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -22,6 +23,12 @@ public class CategoryController {
     public ComminResp list(@Valid CategoryQueryReq req) {
         ComminResp<PageResp<CategoryQueryResp>> objectComminResp = new ComminResp<>();
         PageResp<CategoryQueryResp> list = categoryService.list(req);
+        objectComminResp.setContent(list);
+        return objectComminResp;
+    }  @GetMapping("/all")//模糊查询书籍
+    public ComminResp all() {
+        ComminResp<List<CategoryQueryResp>> objectComminResp = new ComminResp<>();
+       List<CategoryQueryResp> list = categoryService.all();
         objectComminResp.setContent(list);
         return objectComminResp;
     }

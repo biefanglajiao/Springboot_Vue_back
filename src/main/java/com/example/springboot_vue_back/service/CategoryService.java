@@ -26,14 +26,25 @@ public class CategoryService {
     @Autowired
     private SnowFlake snowFlake;
 
+    public List<CategoryQueryResp> all() {
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");//根据sort字段升序排列
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+        //将Category类型转为CategoryResp类型 使用copyutils工具类
+        List<CategoryQueryResp> categoryRespList = CopyUtils.copyList(categoryList, CategoryQueryResp.class);
+
+
+        return categoryRespList;
+    }
+
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req) {
 //        分页查询=》查询总数+查当前页数据
         PageHelper.startPage(req.getPage(), req.getSize());//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
 
 
         CategoryExample categoryExample = new CategoryExample();
-        CategoryExample.Criteria criteria = categoryExample.createCriteria();
-                List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+        categoryExample.setOrderByClause("sort asc");//根据sort字段升序排列
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
 
         PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
         pageInfo.getTotal();//返回总条数  配合前端可以通过知道总条数查询分页
@@ -57,26 +68,24 @@ public class CategoryService {
     }
 
 
-
-
-    public void save(CategorySaveReq req){
-        Category category= CopyUtils.copy(req,Category.class);//将请求参数更新为实体
-        if (ObjectUtils.isEmpty(req.getId())){//判断是否存在
+    public void save(CategorySaveReq req) {
+        Category category = CopyUtils.copy(req, Category.class);//将请求参数更新为实体
+        if (ObjectUtils.isEmpty(req.getId())) {//判断是否存在
             //不存在 新增
 
-            category.setId( snowFlake.nextId());//将生成的雪花算法赋给id
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+category.getId());
+            category.setId(snowFlake.nextId());//将生成的雪花算法赋给id
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + category.getId());
             //文档 阅读 点赞数  初始默认0
 
             categoryMapper.insert(category);
-        }else {
+        } else {
             //更新
             categoryMapper.updateByPrimaryKey(category);
         }
 
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         categoryMapper.deleteByPrimaryKey(id);
 
     }

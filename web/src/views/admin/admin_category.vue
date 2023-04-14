@@ -5,31 +5,32 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-form layout="inline" :model="param" >
+        <a-form layout="inline" :model="param">
           <a-form-item>
-        <a-space  direction="vertical">
-        <a-input-search
-            v-model:value="param.name"
-            placeholder="名称"
-            enter-button
-            @search="handleQuery({page:1,size:pagination.pageSize})"
-        />
-        </a-space>
+            <a-space direction="vertical">
+              <a-input-search
+                  v-model:value="param.name"
+                  placeholder="名称"
+                  enter-button
+                  @search="handleQuery()"
+              />
+            </a-space>
           </a-form-item>
+
           <a-form-item>
-        <p>
-        <a-button type="primary" @click="add()">
-            新增
-          </a-button>
-        </p>
+            <p>
+              <a-button type="primary" @click="add()">
+                新增
+              </a-button>
+            </p>
           </a-form-item>
         </a-form>
         <a-table :columns="columns"
                  :data-source="categorys"
                  :row-key="record => record.id"
-                 :pagination="pagination"
+                 :pagination="false"
                  :loading="loading"
-                 @change="handleTableChange"
+
         >
           <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
           <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
@@ -37,7 +38,7 @@
             <img class="img_xhz" v-if="cover" :src="cover" alt="avatar">
             <!--            //todo 图片的处理-->
           </template>
-          <template v-slot :action="{text,record}">
+          <template v-slot:action="{text,record}">
             <a-space size="small">
               <a-button type="primary" @click="edit(record)">
                 编辑
@@ -64,10 +65,10 @@
       </a-layout-content>
     </a-layout>
   </a-layout-content>
-<!--  //Q::confirm-loading的含义-->
-<!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
+  <!--  //Q::confirm-loading的含义-->
+  <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
   <a-modal title="分类" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
-    <a-form :model="category" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
+    <a-form :model="category" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" >
       <a-form-item label="名称">
         <a-input v-model:value="category.name"/>
       </a-form-item>
@@ -79,7 +80,6 @@
       </a-form-item>
 
 
-
     </a-form>
   </a-modal>
 </template>
@@ -88,22 +88,17 @@
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
-import { Tool } from '@/utils/tool';
+import {Tool} from '@/utils/tool';
 
 export default defineComponent({
   name: 'AdminEategory',
   setup() {
-    const param=ref();
-    param.value={};
+    const param = ref();
+    param.value = {};
     const categorys = ref();
-    const pagination = ref({
-      current: 1,
-      pageSize: 5,
-      total: 0
-    });
     const loading = ref(false);
     const columns = [
-          {
+      {
         title: '名称',
         dataIndex: 'name',
       },
@@ -140,10 +135,7 @@ export default defineComponent({
         if (data.success) {
           modalVisible.value = false;//关闭视图
           //重新加载列表
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
+          handleQuery();
         } else {
           message.error(data.message);
         }
@@ -156,7 +148,7 @@ export default defineComponent({
     const edit = (record: any) => {
       modalVisible.value = true;
       // category.value = record;
-      category.value=Tool.copy(record);
+      category.value = Tool.copy(record);
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给category.value，但是这样做会导致修改category.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给category.value
     }
@@ -175,39 +167,26 @@ export default defineComponent({
 
 
     const delet = (id: number) => {
-          axios.delete("/category/delete/" + id).then((response) => {
+      axios.delete("/category/delete/" + id).then((response) => {
 
-            const data = response.data;
+        const data = response.data;
 
 
-            //重新加载列表
-            handleQuery({
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            });
-          });
-        }
+        //重新加载列表
+        handleQuery();
+      });
+    }
 
     /***
      * @方法描述: 数据查询方法
      */
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true;
-      axios.get("/category/list", {
-        params: {
-          page: params.page,
-          size: params.size,
-          name: param.value.name,
-        }
-      }).then((response) => {
+      axios.get("/category/all",).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
-          categorys.value = data.content.list;
-
-          //重置分页按钮
-          pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
+          categorys.value = data.content;
         } else {
           message.error(data.message);
         }
@@ -215,26 +194,11 @@ export default defineComponent({
     };
 
 
-    /***
-     * @方法描述: 表格点击页面触发
-     */
-    const handleTableChange = (pagination: any) => {
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      });
-
-    };
-
-
     /**
      * @方法描述: 初始进入页面就查一次数据
      */
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize,
-      });
+      handleQuery();
     });
 
 
@@ -242,10 +206,9 @@ export default defineComponent({
       //列表
       param,
       categorys,
-      pagination,
+
       columns,
       loading,
-      handleTableChange,
       handleQuery,
 
       //   编辑表格相关
