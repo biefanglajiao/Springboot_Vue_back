@@ -37,7 +37,12 @@
             <img class="img_xhz" v-if="cover" :src="cover" alt="avatar">
             <!--            //todo 图片的处理-->
           </template>
+          <template v-slot:category="{text,record}">
+
+            <span>{{getCategoryName(record.category1Id)}}/{{getCategoryName(record.category2Id)}}</span>
+          </template>
           <template v-slot:action="{text,record}">
+
             <a-space size="small">
               <a-button type="primary" @click="edit(record)">
                 编辑
@@ -48,7 +53,6 @@
                   ok-text="是"
                   cancel-text="否"
                   @confirm="delet(record.id)"
-
               >
                 <a-button type="danger">
                   <!--                delete是关键字  @click="delet(record.id)-->
@@ -111,7 +115,8 @@ export default defineComponent({
       total: 0
     });
     const loading = ref(false);
-    const columns = [{
+    const columns = [
+        {
       title: '封面',
       dataIndex: 'cover',
       //   渲染
@@ -122,16 +127,11 @@ export default defineComponent({
         dataIndex: 'name',
       },
       {
-        title: '分类一',
-        key: 'category1Id',
-        dataIndex: 'category1Id',
+        title: '分类',
+      slots: {customRender: 'category'}
 
       },
-      {
-        title: '分类二',
-        key: 'category2Id',
-        dataIndex: 'category2Id',
-      },
+
       {
         title: '文档数',
         dataIndex: 'docCount',
@@ -189,6 +189,7 @@ export default defineComponent({
       categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id];
     }
     const categoryslevel = ref();
+    let categorys :any;
     /***
      * @方法描述: 数据查询方法
      * @param params
@@ -199,7 +200,7 @@ export default defineComponent({
         loading.value = false;
         const data = response.data;
         if (data.success) {
-          const categorys = data.content.list;
+           categorys = data.content.list;
            console.log("categorys 值为："+categorys);
           categoryslevel.value = [];
           console.log()
@@ -210,6 +211,18 @@ export default defineComponent({
         }
       });
     };
+    /***
+     * @方法描述: 查询id对应name
+     */
+    const getCategoryName = (id: number) => {
+      let reslut="";
+      for (let i = 0; i < categorys.length; i++) {
+        if (categorys[i].id == id) {
+         reslut=categorys[i].name;
+        }
+      }
+      return reslut;
+    }
     /***
      *@方法描述: 单击新增按钮方法
      */
@@ -312,7 +325,9 @@ export default defineComponent({
        * 分类相关
        */
       categoryIds,
+
       categoryslevel,
+      getCategoryName,
     }
   }
 });
