@@ -5,23 +5,23 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-form layout= "inline" :model="param" >
+        <a-form layout="inline" :model="param">
           <a-form-item>
-        <a-space  direction="vertical">
-        <a-input-search
-            v-model:value="param.name"
-            placeholder="名称"
-            enter-button
-            @search="handleQuery({page:1,size:pagination.pageSize})"
-        />
-        </a-space>
+            <a-space direction="vertical">
+              <a-input-search
+                  v-model:value="param.name"
+                  placeholder="名称"
+                  enter-button
+                  @search="handleQuery({page:1,size:pagination.pageSize})"
+              />
+            </a-space>
           </a-form-item>
           <a-form-item>
-        <p>
-        <a-button type="primary" @click="add()">
-            新增
-          </a-button>
-        </p>
+            <p>
+              <a-button type="primary" @click="add()">
+                新增
+              </a-button>
+            </p>
           </a-form-item>
         </a-form>
         <a-table :columns="columns"
@@ -64,8 +64,8 @@
       </a-layout-content>
     </a-layout>
   </a-layout-content>
-<!--  //Q::confirm-loading的含义-->
-<!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
+  <!--  //Q::confirm-loading的含义-->
+  <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
   <a-modal title="电子书表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
     <a-form :model="ebook" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
       <a-form-item label="名称">
@@ -74,11 +74,15 @@
       <a-form-item label="封面">
         <a-input v-model:value="ebook.cover"/>
       </a-form-item>
-      <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id"/>
-      </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id"/>
+      <a-form-item label="分类">
+        <a-cascader v-model:value="categoryIds"
+                    :field-names="{label: 'name',value: 'id',children: 'children'}"
+                    :options="categoryslevel"
+        />
+<!--        //Q:::field-names="{label: 'name',value: 'id',children: 'children'}"的含义-->
+<!--        //A:field-names是一个属性，用来指定级联选择器的字段名，这里指定的是name，id，children，这样在级联选择器中就可以通过name，id，children来指定数据的字段名-->
+<!--        //Q:::options="categoryslevel"的含义-->
+<!--        //A:options是一个属性，用来指定级联选择器的数据源，这里指定的是categoryslevel，这样在级联选择器中就可以通过categoryslevel来指定数据源-->
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="text"/>
@@ -93,13 +97,13 @@
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
-import { Tool } from '@/utils/tool';
+import {Tool} from '@/utils/tool';
 
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
-    const param=ref();
-    param.value={};
+    const param = ref();
+    param.value = {};
     const ebooks = ref();
     const pagination = ref({
       current: 1,
@@ -152,9 +156,11 @@ export default defineComponent({
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
     const ebook = ref();
+    const categoryIds = ref();
     const handleModalOk = () => {//保存
       modalLoading.value = true;
-
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
       axios.post("/ebook/save", ebook.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
@@ -177,10 +183,33 @@ export default defineComponent({
     const edit = (record: any) => {
       modalVisible.value = true;
       // ebook.value = record;
-      ebook.value=Tool.copy(record);
+      ebook.value = Tool.copy(record);
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给ebook.value，但是这样做会导致修改ebook.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给ebook.value
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id];
     }
+    const categoryslevel = ref();
+    /***
+     * @方法描述: 数据查询方法
+     * @param params
+     */
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/list",).then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+          const categorys = data.content.list;
+           console.log("categorys 值为："+categorys);
+          categoryslevel.value = [];
+          console.log()
+          categoryslevel.value = Tool.array2Tree(categorys, 0);
+          console.log(" categoryslevel 的树形结构"+categoryslevel.value);
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
     /***
      *@方法描述: 单击新增按钮方法
      */
@@ -196,18 +225,18 @@ export default defineComponent({
 
 
     const delet = (id: number) => {
-          axios.delete("/ebook/delete/" + id).then((response) => {
+      axios.delete("/ebook/delete/" + id).then((response) => {
 
-            const data = response.data;
+        const data = response.data;
 
 
-            //重新加载列表
-            handleQuery({
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            });
-          });
-        }
+        //重新加载列表
+        handleQuery({
+          page: pagination.value.current,
+          size: pagination.value.pageSize
+        });
+      });
+    }
 
     /***
      * @方法描述: 数据查询方法
@@ -252,6 +281,7 @@ export default defineComponent({
      * @方法描述: 初始进入页面就查一次数据
      */
     onMounted(() => {
+      handleQueryCategory();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize,
@@ -277,6 +307,12 @@ export default defineComponent({
       edit,
       add,
       delet,
+
+      /**
+       * 分类相关
+       */
+      categoryIds,
+      categoryslevel,
     }
   }
 });
