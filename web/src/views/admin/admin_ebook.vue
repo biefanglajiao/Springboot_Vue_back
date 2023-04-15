@@ -209,6 +209,13 @@ export default defineComponent({
           console.log()
           categoryslevel.value = Tool.array2Tree(categorys, 0);
           console.log(" categoryslevel 的树形结构"+categoryslevel.value);
+
+
+//加载完分类以后，在加载电子书，否则分类树加载很慢，电子数会报错
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize,
+          });
         } else {
           message.error(data.message);
         }
@@ -297,11 +304,17 @@ export default defineComponent({
      * @方法描述: 初始进入页面就查一次数据
      */
     onMounted(() => {
-      handleQueryCategory();
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize,
-      });
+      /***
+       *
+       *    handleQueryCategory();
+       *       handleQuery({
+       *         page: 1,
+       *         size: pagination.value.pageSize,
+       *       });
+       * 这两个方法是异步执行的  如果获取分类在获取电子数后面 ，电子书中给分类渲染的方法会报错误（为空--因为没有取到 ）
+       * 改进 把获取电子数的方法 放到获取分类的方法中
+       */
+   handleQueryCategory();
     });
 
 
