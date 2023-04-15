@@ -160,7 +160,7 @@ export default defineComponent({
         categoryIds.value=["302319831670198272"];//啥也不选默认为默认分类的id
 
       }
-        console.log("     “啊阿达啊大大" + categoryIds.value)
+        console.log("     “啊阿达啊大大" , categoryIds.value)
         ebook.value.category1Id = categoryIds.value[0];
         ebook.value.category2Id = categoryIds.value[1];
         axios.post("/ebook/save", ebook.value).then((response) => {
@@ -204,11 +204,11 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
            categorys = data.content.list;
-           console.log("categorys 值为："+categorys);
+           console.log("categorys 值为：",categorys);
           categoryslevel.value = [];
           console.log()
           categoryslevel.value = Tool.array2Tree(categorys, 0);
-          console.log(" categoryslevel 的树形结构"+categoryslevel.value);
+          console.log(" categoryslevel 的树形结构",categoryslevel.value);
 
 
 //加载完分类以后，在加载电子书，否则分类树加载很慢，电子数会报错

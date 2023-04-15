@@ -237,7 +237,7 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           categorys.value = data.content;
-          console.log("初始数据" + categorys.value);
+          console.log("初始数据" , categorys.value);
           categoryslevel.value = [];
           categorys.value = Tool.array2Tree(categorys.value, 0);
           categoryslevel.value = categorys.value;

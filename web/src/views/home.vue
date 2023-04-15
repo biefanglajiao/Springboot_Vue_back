@@ -165,11 +165,11 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           categorys = data.content.list;
-          console.log("categorys 值为："+categorys);
+          console.log("categorys 值为：",categorys);
           categoryslevel.value = [];
           console.log()
           categoryslevel.value = Tool.array2Tree(categorys, 0);
-          console.log(" categoryslevel 的树形结构"+categoryslevel.value);
+          console.log(" categoryslevel 的树形结构",categoryslevel.value);
         } else {
           message.error(data.message);
         }
