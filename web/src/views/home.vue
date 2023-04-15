@@ -102,7 +102,7 @@ export default defineComponent({
 
     const isshowwelcome = ref(true);
 
-
+let categoryId2 = 0;
     /***
      * @分页：暂时不用
      * todo 分页
@@ -115,23 +115,29 @@ export default defineComponent({
     //   total:0,
     //   pageSize: 100,
     // };
-    onMounted(() => {//生命周期函数
-
-      console.log("onMounted")
-      handleQueryCategory();
+    console.log("onMounted")
+    /***
+     * @方法描述: 分类的书籍查询方法
+     */
+    const handleQuertEbook = () => {
       axios.get("/ebook/list", {
-        params: {
-          page: 1,
-          size: 100,
-        }
-      }).then((response) => {//初始化方法
+      params: {
+        page: 1,
+        size: 100,
+        categoryId2:categoryId2,
+      }  }).then((response) => {//初始化方法
         const data = response.data;
         ebooks.value = data.content.list;
-        console.log(response)
-
-
+        // console.log(response)
       });
-    })
+    }
+
+
+    onMounted(() => {//生命周期函数
+      handleQueryCategory();
+     // handleQuertEbook();
+
+    });
     /***
      * @方法描述: 点击事件
      * @param params
@@ -143,9 +149,11 @@ export default defineComponent({
       if (value.key === "welcome") {
         isshowwelcome.value = true;
       } else {
+        categoryId2 = value.key;
         isshowwelcome.value = false;
+        handleQuertEbook();
       }
-    }
+    };
 
     const actions: Record<string, string>[] = [
       {type: 'StarOutlined', text: '156'},

@@ -38,6 +38,9 @@ public class EbookService {
         if (!ObjectUtils.isEmpty(req.getName())) {
             criteria.andNameLike("%" + req.getName() + "%");//createCriteria()相当于while
         }
+        if (!ObjectUtils.isEmpty(req.getCategoryId2())) {
+            criteria.andCategory2IdEqualTo( req.getCategoryId2() );//createCriteria()相当于while
+        }
 
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
