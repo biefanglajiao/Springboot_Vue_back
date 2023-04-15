@@ -194,7 +194,7 @@ export default defineComponent({
     const categoryslevel = ref();
     let categorys :any;
     /***
-     * @方法描述: 数据查询方法
+     * @方法描述: 分类数据查询方法
      * @param params
      */
     const handleQueryCategory = () => {
