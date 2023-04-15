@@ -157,7 +157,7 @@ export default defineComponent({
     const handleModalOk = () => {//保存
       modalLoading.value = true;
       if (categoryIds.value ==null) {
-        categoryIds.value=["302319831670198272"];//啥也不选默认为默认分类的id
+        categoryIds.value=[500,1];//啥也不选默认为默认分类(其他-未分类)
 
       }
         console.log("     “啊阿达啊大大" , categoryIds.value)
