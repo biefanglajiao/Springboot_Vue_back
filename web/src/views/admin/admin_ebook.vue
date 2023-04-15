@@ -82,11 +82,8 @@
         <a-cascader v-model:value="categoryIds"
                     :field-names="{label: 'name',value: 'id',children: 'children'}"
                     :options="categoryslevel"
+
         />
-<!--        //Q:::field-names="{label: 'name',value: 'id',children: 'children'}"的含义-->
-<!--        //A:field-names是一个属性，用来指定级联选择器的字段名，这里指定的是name，id，children，这样在级联选择器中就可以通过name，id，children来指定数据的字段名-->
-<!--        //Q:::options="categoryslevel"的含义-->
-<!--        //A:options是一个属性，用来指定级联选择器的数据源，这里指定的是categoryslevel，这样在级联选择器中就可以通过categoryslevel来指定数据源-->
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="text"/>
@@ -159,23 +156,29 @@ export default defineComponent({
     const categoryIds = ref();
     const handleModalOk = () => {//保存
       modalLoading.value = true;
-      ebook.value.category1Id = categoryIds.value[0];
-      ebook.value.category2Id = categoryIds.value[1];
-      axios.post("/ebook/save", ebook.value).then((response) => {
-        modalLoading.value = false;//有返回就关闭加载
-        const data = response.data;//data==common,resp
-        if (data.success) {
-          modalVisible.value = false;//关闭视图
-          //重新加载列表
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
-        } else {
-          message.error(data.message);
-        }
+      if (categoryIds.value ==null) {
+        categoryIds.value=["302319831670198272"];//啥也不选默认为默认分类的id
 
-      });
+      }
+        console.log("     “啊阿达啊大大" + categoryIds.value)
+        ebook.value.category1Id = categoryIds.value[0];
+        ebook.value.category2Id = categoryIds.value[1];
+        axios.post("/ebook/save", ebook.value).then((response) => {
+          modalLoading.value = false;//有返回就关闭加载
+          const data = response.data;//data==common,resp
+          if (data.success) {
+            modalVisible.value = false;//关闭视图
+            //重新加载列表
+            handleQuery({
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            });
+          } else {
+            message.error(data.message);
+          }
+
+        });
+
     };
     /***
      *@方法描述: 单击编辑按钮方法
