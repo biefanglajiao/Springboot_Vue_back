@@ -5,14 +5,13 @@
       <a-layout-sider width="200" style="background: #fff">
         <a-menu
             mode="inline"
-
+@click="handleClick"
             style="height: 100%"
         >
-          <a-menu-item key="welcome">
-            <router-link :to="'/'">
+          <a-menu-item key="welcome" v-show="isshowwelcome">
               <MailOutlined/>
               <span>欢迎</span>
-            </router-link>
+
           </a-menu-item>
           <a-sub-menu v-for="c in categoryslevel" :key="c.id" >
             <template v-slot:title>
@@ -26,8 +25,13 @@
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+        <div class="welcome"  v-show="isshowwelcome">
+          欢迎使用
+        </div>
         <a-list item-layout="vertical" size="large" :data-source="ebooks"
-                :grid="{ gutter:20 , column : 3}">
+                :grid="{ gutter:20 , column : 3}"
+                v-show="!isshowwelcome"
+        >
 <!--          :pagination="pagination"   分页属性  暂时不用先-->
           <template #footer>
             <div>
@@ -95,6 +99,10 @@ export default defineComponent({
   setup() {
     console.log("setup")
     const ebooks = ref();
+
+    const isshowwelcome = ref(true);
+
+
     /***
      * @分页：暂时不用
      * todo 分页
@@ -124,6 +132,20 @@ export default defineComponent({
 
       });
     })
+    /***
+     * @方法描述: 点击事件
+     * @param params
+     */
+    const handleClick = (value  :any) => {
+      //Q：这个函数value的含义是什么？
+      //A：value是一个对象，包含了点击的菜单项的信息，包括key，keyPath，item，domEvent
+      // console.log("vaule!!!!!!!",value);
+      if (value.key === "welcome") {
+        isshowwelcome.value = true;
+      } else {
+        isshowwelcome.value = false;
+      }
+    }
 
     const actions: Record<string, string>[] = [
       {type: 'StarOutlined', text: '156'},
@@ -159,6 +181,8 @@ export default defineComponent({
       actions,
 
       categoryslevel,
+      isshowwelcome,  //互斥方法显示是否显示欢迎页面
+      handleClick,//菜单按钮点击事件
     }
   }
 });
