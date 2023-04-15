@@ -65,7 +65,7 @@
   <!--  //Q::confirm-loading的含义-->
   <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
   <a-modal title="分类" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
-    <a-form :model="category" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" >
+    <a-form :model="category" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
       <a-form-item label="名称">
         <a-input v-model:value="category.name"/>
       </a-form-item>
@@ -73,7 +73,18 @@
         <a-input v-model:value="category.sort"/>
       </a-form-item>
       <a-form-item label="父分类">
-        <a-input v-model:value="category.parent"/>
+        <!--        <a-input v-model:value="category.parent"/>-->
+        <a-select
+            ref="select"
+            v-model:value="category.parent"
+        >
+          <a-select-option value="0">无</a-select-option>
+          <a-select-option v-for="c in categoryslevel" :key="c.id" :value="c.id" :disabled="category.id==c.id">
+            {{ c.name }}
+          </a-select-option>
+
+        </a-select>
+
       </a-form-item>
 
 
@@ -206,14 +217,13 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        if (data.success&&(params==null||params=="")) {
+        if (data.success && (params == null || params == "")) {
           categorys.value = data.content.list;
-          categoryslevel.value =[];
-          categorys.value=Tool.array2Tree(categorys.value,0 );
-         }else  if (data.success&&params!=null) {
+          categoryslevel.value = [];
+          categorys.value = Tool.array2Tree(categorys.value, 0);
+        } else if (data.success && params != null) {
           categorys.value = data.content.list;
-        }
-        else {
+        } else {
           message.error(data.message);
         }
       });
@@ -228,16 +238,16 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           categorys.value = data.content;
-          console.log("初始数据"+categorys.value);
-          categoryslevel.value =[];
-          categorys.value=Tool.array2Tree(categorys.value,0 );
-          console.log("树形结构数据"+categoryslevel.value);
+          console.log("初始数据" + categorys.value);
+          categoryslevel.value = [];
+          categorys.value = Tool.array2Tree(categorys.value, 0);
+          categoryslevel.value = categorys.value;
+
         } else {
           message.error(data.message);
         }
       });
     };
-
 
 
     /**
@@ -257,6 +267,7 @@ export default defineComponent({
       loading,
       handleQuery,
       handleQueryByname,
+      categoryslevel,
 
 
       //   编辑表格相关
