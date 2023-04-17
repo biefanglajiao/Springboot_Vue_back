@@ -3,36 +3,37 @@
 
     <a-layout style="padding: 24px 0; background: #fff">
       <a-layout-sider width="200" style="background: #fff">
-        <a-menu
-            mode="inline"
-@click="handleClick"
-            style="height: 100%"
-        >
-          <a-menu-item key="welcome" v-show="isshowwelcome">
-              <MailOutlined/>
+        <div>
+          <a-menu
+              mode="inline"
+              @click="handleClick"
+              style="height: 100%"
+          >
+            <a-menu-item key="welcome" v-show="isshowwelcome">
+              <HomeOutlined/>
               <span>欢迎</span>
-
-          </a-menu-item>
-          <a-sub-menu v-for="c in categoryslevel" :key="c.id" >
-            <template v-slot:title>
+            </a-menu-item>
+            <a-sub-menu v-for="c in categoryslevel" :key="c.id">
+              <template v-slot:title>
                 <span>
                   <user-outlined/>
                   {{ c.name }}
                 </span>
-            </template>
-            <a-menu-item v-for="child in c.children" :key="child.id">{{ child.name }}</a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+              </template>
+              <a-menu-item v-for="child in c.children" :key="child.id">{{ child.name }}</a-menu-item>
+            </a-sub-menu>
+          </a-menu>
+        </div>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <div class="welcome"  v-show="isshowwelcome">
+        <div class="welcome" v-show="isshowwelcome">
           欢迎使用
         </div>
-        <a-list item-layout="vertical" size="large" :data-source="ebooks"
+        <a-list item-layout="vertical" size="middle" :data-source="ebooks"
                 :grid="{ gutter:20 , column : 3}"
                 v-show="!isshowwelcome"
         >
-<!--          :pagination="pagination"   分页属性  暂时不用先-->
+          <!--          :pagination="pagination"   分页属性  暂时不用先-->
           <template #footer>
             <div>
               <b>电子书籍</b>
@@ -71,7 +72,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
-import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
+import {UserOutlined, HomeOutlined, StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
 import {Tool} from "@/utils/tool";
 import {message} from "ant-design-vue";
 //测试假数据
@@ -92,9 +93,11 @@ export default defineComponent({
   name: 'Home',
 
   components: {
+    HomeOutlined,
     StarOutlined,
     LikeOutlined,
     MessageOutlined,
+    UserOutlined,
   },
   setup() {
     console.log("setup")
@@ -102,7 +105,7 @@ export default defineComponent({
 
     const isshowwelcome = ref(true);
 
-let categoryId2 = 0;
+    let categoryId2 = 0;
     /***
      * @分页：暂时不用
      * todo 分页
@@ -121,11 +124,12 @@ let categoryId2 = 0;
      */
     const handleQuertEbook = () => {
       axios.get("/ebook/list", {
-      params: {
-        page: 1,
-        size: 100,
-        categoryId2:categoryId2,
-      }  }).then((response) => {//初始化方法
+        params: {
+          page: 1,
+          size: 100,
+          categoryId2: categoryId2,
+        }
+      }).then((response) => {//初始化方法
         const data = response.data;
         ebooks.value = data.content.list;
         // console.log(response)
@@ -135,14 +139,14 @@ let categoryId2 = 0;
 
     onMounted(() => {//生命周期函数
       handleQueryCategory();
-     // handleQuertEbook();
+      // handleQuertEbook();
 
     });
     /***
      * @方法描述: 点击事件
      * @param params
      */
-    const handleClick = (value  :any) => {
+    const handleClick = (value: any) => {
       //Q：这个函数value的含义是什么？
       //A：value是一个对象，包含了点击的菜单项的信息，包括key，keyPath，item，domEvent
       // console.log("vaule!!!!!!!",value);
@@ -161,7 +165,7 @@ let categoryId2 = 0;
       {type: 'MessageOutlined', text: '2'},
     ];
     const categoryslevel = ref();
-    let categorys :any;
+    let categorys: any;
     /***
      * @方法描述: 数据查询方法
      * @param params
@@ -173,11 +177,11 @@ let categoryId2 = 0;
         const data = response.data;
         if (data.success) {
           categorys = data.content.list;
-          console.log("categorys 值为：",categorys);
+          console.log("categorys 值为：", categorys);
           categoryslevel.value = [];
           console.log()
           categoryslevel.value = Tool.array2Tree(categorys, 0);
-          console.log(" categoryslevel 的树形结构",categoryslevel.value);
+          console.log(" categoryslevel 的树形结构", categoryslevel.value);
         } else {
           message.error(data.message);
         }

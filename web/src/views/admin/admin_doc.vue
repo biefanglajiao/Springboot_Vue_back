@@ -236,7 +236,7 @@ export default defineComponent({
       axios.delete("/doc/delete/" + id).then((response) => {
 
         const data = response.data;
-
+console.log(data);
 
         //重新加载列表
         handleQuery();
