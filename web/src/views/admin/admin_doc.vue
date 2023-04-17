@@ -69,6 +69,22 @@
       <a-form-item label="名称">
         <a-input v-model:value="doc.name"/>
       </a-form-item>
+      <a-form-item label="父文档">
+        <a-tree-select
+            v-model:value="doc.parent"
+            show-search
+            style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            placeholder="请选择父文档"
+            allow-clear
+            tree-default-expand-all
+            :tree-data="treeSleectData"
+            :fieldNames="{label:'name',key:'id',value:'id' }"
+
+        >
+          <!--不加冒号后面是字符串 加上是变量-->
+        </a-tree-select>
+      </a-form-item>
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
       </a-form-item>
@@ -131,6 +147,9 @@ export default defineComponent({
     /*****
      * @方法描述: 编辑表单的提交
      */
+    // doclevel将数据进行包装 方便在分类选择中造出0级分类
+    const treeSleectData = ref();
+    treeSleectData.value = [];
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
     const doc = ref();
@@ -150,6 +169,38 @@ export default defineComponent({
 
       });
     };
+
+    /**
+     * 将某节点及其子孙节点全部置为disabled  递归
+     */
+    const setDisable = (treeSelectData: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          // 如果当前节点就是目标节点
+          console.log("disabled", node);
+          // 将目标节点设置为disabled
+          node.disabled = true;
+
+          // 遍历所有子节点，将所有子节点全部都加上disabled
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              setDisable(children, children[j].id)
+            }
+          }
+        } else {
+          // 如果当前节点不是目标节点，则到其子节点再找找看。
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            setDisable(children, id);
+          }
+        }
+      }
+    };
+
     /***
      *@方法描述: 单击编辑按钮方法
      */
@@ -159,6 +210,11 @@ export default defineComponent({
       doc.value = Tool.copy(record);
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给doc.value，但是这样做会导致修改doc.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给doc.value
+
+      treeSleectData.value=Tool.copy(docslevel.value);
+      setDisable(treeSleectData.value,record.id)
+
+      treeSleectData.value.unshift({id: 0, name: "无"});//将无添加到treeSleectData中;;unshift是在数组的开头添加元素
     }
     /***
      *@方法描述: 单击新增按钮方法
@@ -168,6 +224,8 @@ export default defineComponent({
       doc.value = {};
       doc.value.cover = "url地址";
 
+      treeSleectData.value=Tool.copy(docslevel.value);
+      treeSleectData.value.unshift({id: 0, name: "无"});
     }
     /***
      * @方法描述: 删除按钮方法
@@ -237,11 +295,11 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           docs.value = data.content;
-          console.log("初始数据" , docs.value);
+          console.log("初始数据", docs.value);
           docslevel.value = [];
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
-
+          console.log("处理后的数据", docslevel.value)
         } else {
           message.error(data.message);
         }
@@ -277,6 +335,7 @@ export default defineComponent({
       edit,
       add,
       delet,
+      treeSleectData,//树结构分类
     }
   }
 });
