@@ -42,8 +42,8 @@
 <!--//下面写什么  生成什么-->
         <!--<table tableName="demo" domainObjectName="Demo"/>-->
 <!--        <table tableName="ebook" domainObjectName="Ebook"/>-->
-        <table tableName="category"/>
-        <!--<table tableName="doc"/>-->
+<!--        <table tableName="category"/>-->
+        <table tableName="doc"/>
         <!--<table tableName="content"/>-->
         <!--<table tableName="user"/>-->
 
