@@ -88,19 +88,22 @@
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
       </a-form-item>
-      <a-form-item label="父文档">
-        <!--        <a-input v-model:value="doc.parent"/>-->
-        <a-select
-            ref="select"
-            v-model:value="doc.parent"
-        >
-          <a-select-option value="0">无</a-select-option>
-          <a-select-option v-for="c in docslevel" :key="c.id" :value="c.id" :disabled="doc.id==c.id">
-            {{ c.name }}
-          </a-select-option>
-
-        </a-select>
-
+      <a-form-item label="内容">
+        <div style="border: 1px solid #ccc">
+          <Toolbar
+              style="border-bottom: 1px solid #ccc"
+              :editor="editorRef"
+              :defaultConfig="toolbarConfig"
+              :mode="mode"
+          />
+          <Editor
+              style="height: 500px; overflow-y: hidden;"
+              v-model="valueHtml"
+              :defaultConfig="editorConfig"
+              :mode="mode"
+              @onCreated="handleCreated"
+          />
+        </div>
       </a-form-item>
 
 
@@ -109,16 +112,56 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref, h, createVNode} from 'vue';
+import { onBeforeUnmount,shallowRef, defineComponent, onMounted, ref, h, createVNode} from 'vue';
 import axios from "axios";
 import {message, Modal} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 export default defineComponent({
   name: 'AdminDoc',
+  components: {
+    Editor,
+    Toolbar
+  },
   setup() {
+    /****
+     * @富文本编辑相关 start
+     */
+        // 编辑器实例，必须用 shallowRef
+    const editorRef = shallowRef()
+
+    // 内容 HTML
+    const valueHtml = ref('<p>hello</p>')
+
+    // 模拟 ajax 异步获取内容
+    onMounted(() => {
+      setTimeout(() => {
+        valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
+      }, 1500)
+    })
+
+    const toolbarConfig = {}
+    const editorConfig = { placeholder: '请输入内容...' }
+
+    // 组件销毁时，也及时销毁编辑器
+    onBeforeUnmount(() => {
+      const editor = editorRef.value
+      if (editor == null) return
+      editor.destroy()
+    })
+
+    const handleCreated = (editor: any) => {
+      editorRef.value = editor // 记录 editor 实例，重要！
+    }
+    /***
+     * @富文本编辑器相关 end
+     */
+
+
     const route = useRoute();//路由  带有很多路由的信息
     console.log("路由", route);
     console.log("route.path", route.path);//当前路由的路径(不含参数)
@@ -408,6 +451,14 @@ export default defineComponent({
       delet,
       treeSleectData,//树结构分类
       showConfirm,//二次提示框
+
+      //富文本编辑器相关
+      editorRef,
+      valueHtml,
+      mode: 'default', // 或 'simple'
+      toolbarConfig,
+      editorConfig,
+      handleCreated
     }
   }
 });
