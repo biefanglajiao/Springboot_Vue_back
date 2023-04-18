@@ -1,11 +1,15 @@
 package com.example.springboot_vue_back.resp;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 /**
  * @Author: 常兆海
  * @Description:
  * @DateTime: 2023/4/17 10:59
  **/
 public class DocQueryResp {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     private Long ebookId;
