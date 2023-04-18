@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -41,10 +42,11 @@ public class DocController {
         return objectComminResp;
     }
 
-    @DeleteMapping("/delete/{id}")//保存书籍  一般保存类用post
-    public ComminResp delete(@PathVariable long id) {//@PathVariable 用于获取url中的数据
+    @DeleteMapping("/delete/{idsStr}")//保存书籍  一般保存类用post
+    public ComminResp delete(@PathVariable String idsStr) {//@PathVariable 用于获取url中的数据
         ComminResp objectComminResp = new ComminResp<>();
-        docService.delete(id);
+        List<String> strings = Arrays.asList(idsStr.split(","));
+        docService.delete(strings);
 
         return objectComminResp;
     }
