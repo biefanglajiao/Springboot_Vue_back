@@ -5,58 +5,66 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-form layout="inline" :model="param">
-          <a-form-item>
-            <a-space direction="vertical">
-              <a-input-search
-                  v-model:value="param.name"
-                  placeholder="名称"
-                  enter-button
-                  @search="handleQueryByname(param.name)"
-              />
-            </a-space>
-          </a-form-item>
+<a-row>
+  <a-col :span="12">
+    <a-form layout="inline" :model="param">
+      <a-form-item>
+        <a-space direction="vertical">
+          <a-input-search
+              v-model:value="param.name"
+              placeholder="名称"
+              enter-button
+              @search="handleQueryByname(param.name)"
+          />
+        </a-space>
+      </a-form-item>
 
-          <a-form-item>
-            <p>
-              <a-button type="primary" @click="add()">
-                新增
-              </a-button>
-            </p>
-          </a-form-item>
-        </a-form>
-        <a-table :columns="columns"
-                 :data-source="docs"
-                 :row-key="record => record.id"
-                 :pagination="false"
-                 :loading="loading"
+      <a-form-item>
+        <p>
+          <a-button type="primary" @click="add()">
+            新增
+          </a-button>
+        </p>
+      </a-form-item>
+    </a-form>
+    <a-table :columns="columns"
+             :data-source="docs"
+             :row-key="record => record.id"
+             :pagination="false"
+             :loading="loading"
 
-        >
-          <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
-          <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
+    >
+      <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
+      <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
 
-          <template v-slot:action="{text,record}">
-            <a-space size="small">
-              <a-button type="primary" @click="edit(record)">
-                编辑
-              </a-button>
-              <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
+      <template v-slot:action="{text,record}">
+        <a-space size="small">
+          <a-button type="primary" @click="edit(record)">
+            编辑
+          </a-button>
+          <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
 
-              <a-popconfirm
-                  title="删除后不可回复，是否删除?"
-                  ok-text="是"
-                  cancel-text="否"
-                  @confirm="showConfirm(record)"
-              >
-                <a-button type="danger">
-                  <!--                delete是关键字  @click="delet(record.id)-->
-                  删除
-                </a-button>
-              </a-popconfirm>
+          <a-popconfirm
+              title="删除后不可回复，是否删除?"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="showConfirm(record)"
+          >
+            <a-button type="danger">
+              <!--                delete是关键字  @click="delet(record.id)-->
+              删除
+            </a-button>
+          </a-popconfirm>
 
-            </a-space>
-          </template>
-        </a-table>
+        </a-space>
+      </template>
+    </a-table>
+  </a-col>
+  <a-col :span="12">
+
+  </a-col>
+</a-row>
+
 
 
       </a-layout-content>
