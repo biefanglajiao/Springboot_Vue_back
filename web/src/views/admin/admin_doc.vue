@@ -142,7 +142,7 @@ import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
-
+//todo Bug遗留：如果文档列表为空 新增时没有’无选项‘
 export default defineComponent({
   name: 'AdminDoc',
   components: {
@@ -447,6 +447,12 @@ export default defineComponent({
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
           console.log("处理后的数据", docslevel.value)
+
+          //父文档下拉框初始化 ，相当于默认点击新增
+          treeSleectData.value=Tool.copy(docslevel.value);
+          //为选择树新增一个无
+          treeSleectData.value.unshift({id:0,name:"无"});
+          console.log("treeSleectData",treeSleectData.value);
         } else {
           message.error(data.message);
         }
