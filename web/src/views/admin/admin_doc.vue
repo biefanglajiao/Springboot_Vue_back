@@ -293,7 +293,7 @@ export default defineComponent({
       doc.value = Tool.copy(record);
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给doc.value，但是这样做会导致修改doc.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给doc.value
-
+      handleQueryContent();//doc有值以后 去查询相应的内容
       treeSleectData.value = Tool.copy(docslevel.value);
       setDisable(treeSleectData.value, record.id)
 
@@ -442,6 +442,23 @@ export default defineComponent({
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
           console.log("处理后的数据", docslevel.value)
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+    /***
+     * @方法描述: 内容数据获取方法
+     */
+    const handleQueryContent = () => {
+      axios.get("/doc/find-content/" + doc.value.id,).then((response) => {
+
+        const data = response.data;
+        if (data.success) {
+          const editor = editorRef.value;
+          editor.setHtml(data.content);
+
+
         } else {
           message.error(data.message);
         }

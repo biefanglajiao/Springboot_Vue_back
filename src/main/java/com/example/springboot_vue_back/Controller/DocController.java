@@ -26,7 +26,17 @@ public class DocController {
         PageResp<DocQueryResp> list = docService.list(req);
         objectComminResp.setContent(list);
         return objectComminResp;
-    }  @GetMapping("/all")//模糊查询书籍
+    }
+
+        @GetMapping("/find-content/{id}")//模糊查询书籍
+    public ComminResp findContent( @PathVariable  Long id) {
+        ComminResp<String> objectComminResp = new ComminResp<>();
+      String content = docService.finfContent(id);
+        objectComminResp.setContent(content);
+        return objectComminResp;
+    }
+
+    @GetMapping("/all")//模糊查询书籍
     public ComminResp all() {
         ComminResp<List<DocQueryResp>> objectComminResp = new ComminResp<>();
        List<DocQueryResp> list = docService.all();
