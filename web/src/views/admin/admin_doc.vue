@@ -113,10 +113,22 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminDoc',
   setup() {
+    const route = useRoute();//路由  带有很多路由的信息
+    console.log("路由", route);
+    console.log("route.path", route.path);//当前路由的路径(不含参数)
+    console.log("route.params", route.params);//参数--对应 '/admin/doc/'+record.id  需要在路由中配置
+    console.log("route.query", route.query);//参数--对应 '/admin/doc/ebookId='+record.id
+    console.log("route.name", route.name);
+    console.log("route.fullPath", route.fullPath);
+    console.log("route.hash", route.hash);
+    console.log("route.meta", route.meta);//路由元信息（在路由配置里可以添加的自定义信息）
+
+
     const param = ref();
     param.value = {};
 
@@ -221,7 +233,9 @@ export default defineComponent({
      */
     const add = () => {
       modalVisible.value = true;
-      doc.value = {};
+      doc.value = {
+        ebookId:route.query.ebookId
+      };
       doc.value.cover = "url地址";
 
       treeSleectData.value=Tool.copy(docslevel.value);
@@ -305,6 +319,8 @@ console.log(data);
         }
       });
     };
+
+
 
 
     /**
