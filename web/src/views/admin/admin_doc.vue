@@ -241,9 +241,9 @@ export default defineComponent({
         modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
         if (data.success) {
-          message.success(data.message);
+          message.success("保存成功");
           doc.value = {};
-          editorRef.value.clear();//清空富文本编辑器
+
           //重新加载列表
           handleQuery();
         } else {
@@ -288,12 +288,14 @@ export default defineComponent({
      *@方法描述: 单击编辑按钮方法
      */
     const edit = (record: any) => {
+     const editor=editorRef.value;
+     editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       // doc.value = record;
       doc.value = Tool.copy(record);
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给doc.value，但是这样做会导致修改doc.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给doc.value
-      handleQueryContent();//doc有值以后 去查询相应的内容
+      handleQueryContent();//doc有值以后 去查询相应的富文本框内容
       treeSleectData.value = Tool.copy(docslevel.value);
       setDisable(treeSleectData.value, record.id)
 
@@ -303,6 +305,8 @@ export default defineComponent({
      *@方法描述: 单击新增按钮方法
      */
     const add = () => {
+      const editor=editorRef.value;
+      editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       doc.value = {
         ebookId: route.query.ebookId
