@@ -282,7 +282,7 @@ export default defineComponent({
     const delet = (id: number) => {
       setDeleIds(docslevel.value, id);
       axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
-
+        ids.splice(0, ids.length);//清空数组
         const data = response.data;
         console.log(data);
 
