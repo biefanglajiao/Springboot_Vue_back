@@ -5,7 +5,7 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-row>
+        <a-row :gutter="24">
           <a-col :span="8">
             <a-form layout="inline" :model="param">
               <a-form-item>
@@ -19,21 +19,19 @@
                 </a-space>
               </a-form-item>
 
-              <a-form-item>
-                <p>
-                  <a-button type="primary" @click="add()">
-                    新增
-                  </a-button>
-                </p>
-              </a-form-item>
+
             </a-form>
-            <a-table :columns="columns"
-                     :data-source="docs"
-                     :row-key="record => record.id"
-                     :pagination="false"
-                     :loading="loading"
+            <a-table
+                :v-if="docslevel.length>0"
+                :columns="columns"
+                :data-source="docs"
+                :row-key="record => record.id"
+                :pagination="false"
+                :loading="loading"
+                :defaultExpandAllRows="true"
 
             >
+              <!--              :defaultExpandAllRows="true"单独设置此属性没有用 因为数据是异步加载的 所以需要在数据加载完成后再设置  加v-if属性-->
               <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
               <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
 
@@ -60,56 +58,72 @@
               </template>
             </a-table>
           </a-col>
+
           <a-col :span="16">
+            <a-form-item >
+              <p>
+                <a-button type="primary" @click="add()">
+                  新增
+                </a-button>
+              </p>
+
+            </a-form-item>
+
             <!--  //Q::confirm-loading的含义-->
-            <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
-<!--            <a-modal title="文档" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">-->
+            <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk---现改为handleSave方法，handleSave方法会调用axios的post方法，保存数据，然后重新加载列表-->
+            <!--            <a-modal title="文档" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">-->
 
-            <a-form :model="doc" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
-                <a-form-item label="名称">
-                  <a-input v-model:value="doc.name"/>
-                </a-form-item>
-                <a-form-item label="父文档">
-                  <a-tree-select
-                      v-model:value="doc.parent"
-                      show-search
-                      style="width: 100%"
-                      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                      placeholder="请选择父文档"
-                      allow-clear
-                      tree-default-expand-all
-                      :tree-data="treeSleectData"
-                      :fieldNames="{label:'name',key:'id',value:'id' }"
+            <a-form :model="doc" :layout="vertical">
+              <a-form-item label="名称">
+                <a-input v-model:value="doc.name"/>
+              </a-form-item>
+              <a-form-item label="父文档">
+                <a-tree-select
+                    v-model:value="doc.parent"
+                    show-search
+                    style="width: 100%"
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                    placeholder="请选择父文档(点击'编辑'或者'新增'后进行选择)"
+                    allow-clear
+                    tree-default-expand-all
+                    :tree-data="treeSleectData"
+                    :fieldNames="{label:'name',key:'id',value:'id' }"
 
-                  >
-                    <!--不加冒号后面是字符串 加上是变量-->
-                  </a-tree-select>
-                </a-form-item>
-                <a-form-item label="顺序">
-                  <a-input v-model:value="doc.sort"/>
-                </a-form-item>
-                <a-form-item label="内容">
-                  <div style="border: 1px solid #ccc">
-                    <Toolbar
-                        style="border-bottom: 1px solid #ccc"
-                        :editor="editorRef"
-                        :defaultConfig="toolbarConfig"
-                        :mode="mode"
-                    />
-                    <Editor
-                        style="height: 500px; overflow-y: hidden;"
-                        v-model="valueHtml"
-                        :defaultConfig="editorConfig"
-                        :mode="mode"
-                        @onCreated="handleCreated"
-                    />
-                  </div>
-                </a-form-item>
+                >
+                  <!--不加冒号后面是字符串 加上是变量-->
+                </a-tree-select>
+              </a-form-item>
+              <a-form-item label="顺序">
+                <a-input v-model:value="doc.sort"/>
+              </a-form-item>
+              <a-form-item label="内容">
+                <div style="border: 1px solid #ccc">
+                  <Toolbar
+                      style="border-bottom: 1px solid #ccc"
+                      :editor="editorRef"
+                      :defaultConfig="toolbarConfig"
+                      :mode="mode"
+                  />
+                  <Editor
+                      style="height: 500px; overflow-y: hidden;"
+                      v-model="valueHtml"
+                      :defaultConfig="editorConfig"
+                      :mode="mode"
+                      @onCreated="handleCreated"
+                  />
+                </div>
+              </a-form-item>
+              <p>
+                <a-form layout="inlline" :model="param">
+                  <a-form-item>
+                    <a-button type="primary" @click="handleSave">保存</a-button>
+                  </a-form-item>
+                </a-form>
+              </p>
 
+            </a-form>
 
-              </a-form>
-
-<!--            </a-modal>-->
+            <!--            </a-modal>-->
           </a-col>
         </a-row>
       </a-layout-content>
@@ -216,15 +230,16 @@ export default defineComponent({
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
     const doc = ref();
-    doc.value= {};
-    const handleModalOk = () => {//保存
+    doc.value = {};
+    const handleSave = () => {//保存
       modalLoading.value = true;
 
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
         if (data.success) {
-          modalVisible.value = false;//关闭视图
+          message.success(data.message);
+          doc.value = {};
           //重新加载列表
           handleQuery();
         } else {
@@ -383,6 +398,7 @@ export default defineComponent({
      * 对这个数据处理以后会带动docs发生改变  所以不用返回这个 直接返回docs就行  写出来时方便理解
      */
     const docslevel = ref();
+    docslevel.value = [];//如果不初始化  v-if判断会报错
     /***
      * @方法描述: 数据查询方法
      * @param params
@@ -453,7 +469,7 @@ export default defineComponent({
       modalLoading,
       modalVisible,
       doc,
-      handleModalOk,
+      handleSave,
       edit,
       add,
       delet,
