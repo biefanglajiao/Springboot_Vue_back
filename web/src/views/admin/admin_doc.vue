@@ -5,129 +5,128 @@
     <a-layout style="padding: 24px 0; background: #fff">
 
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-<a-row>
-  <a-col :span="12">
-    <a-form layout="inline" :model="param">
-      <a-form-item>
-        <a-space direction="vertical">
-          <a-input-search
-              v-model:value="param.name"
-              placeholder="名称"
-              enter-button
-              @search="handleQueryByname(param.name)"
-          />
-        </a-space>
-      </a-form-item>
+        <a-row>
+          <a-col :span="8">
+            <a-form layout="inline" :model="param">
+              <a-form-item>
+                <a-space direction="vertical">
+                  <a-input-search
+                      v-model:value="param.name"
+                      placeholder="名称"
+                      enter-button
+                      @search="handleQueryByname(param.name)"
+                  />
+                </a-space>
+              </a-form-item>
 
-      <a-form-item>
-        <p>
-          <a-button type="primary" @click="add()">
-            新增
-          </a-button>
-        </p>
-      </a-form-item>
-    </a-form>
-    <a-table :columns="columns"
-             :data-source="docs"
-             :row-key="record => record.id"
-             :pagination="false"
-             :loading="loading"
+              <a-form-item>
+                <p>
+                  <a-button type="primary" @click="add()">
+                    新增
+                  </a-button>
+                </p>
+              </a-form-item>
+            </a-form>
+            <a-table :columns="columns"
+                     :data-source="docs"
+                     :row-key="record => record.id"
+                     :pagination="false"
+                     :loading="loading"
 
-    >
-      <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
-      <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
+            >
+              <!--        //Q::row-key="record => record.id这个代码的含义是什么-->
+              <!--        //A:row-key是一个属性，用来指定数据的主键，这里指定的是id，这样在表格中就可以通过id来唯一标识一行数据-->
 
-      <template v-slot:action="{text,record}">
-        <a-space size="small">
-          <a-button type="primary" @click="edit(record)">
-            编辑
-          </a-button>
-          <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
+              <template v-slot:action="{text,record}">
+                <a-space size="small">
+                  <a-button type="primary" @click="edit(record)">
+                    编辑
+                  </a-button>
+                  <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
 
-          <a-popconfirm
-              title="删除后不可回复，是否删除?"
-              ok-text="是"
-              cancel-text="否"
-              @confirm="showConfirm(record)"
-          >
-            <a-button type="danger">
-              <!--                delete是关键字  @click="delet(record.id)-->
-              删除
-            </a-button>
-          </a-popconfirm>
+                  <a-popconfirm
+                      title="删除后不可回复，是否删除?"
+                      ok-text="是"
+                      cancel-text="否"
+                      @confirm="showConfirm(record)"
+                  >
+                    <a-button type="danger">
+                      <!--                delete是关键字  @click="delet(record.id)-->
+                      删除
+                    </a-button>
+                  </a-popconfirm>
 
-        </a-space>
-      </template>
-    </a-table>
-  </a-col>
-  <a-col :span="12">
+                </a-space>
+              </template>
+            </a-table>
+          </a-col>
+          <a-col :span="16">
+            <!--  //Q::confirm-loading的含义-->
+            <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
+<!--            <a-modal title="文档" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">-->
 
-  </a-col>
-</a-row>
+            <a-form :model="doc" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
+                <a-form-item label="名称">
+                  <a-input v-model:value="doc.name"/>
+                </a-form-item>
+                <a-form-item label="父文档">
+                  <a-tree-select
+                      v-model:value="doc.parent"
+                      show-search
+                      style="width: 100%"
+                      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                      placeholder="请选择父文档"
+                      allow-clear
+                      tree-default-expand-all
+                      :tree-data="treeSleectData"
+                      :fieldNames="{label:'name',key:'id',value:'id' }"
+
+                  >
+                    <!--不加冒号后面是字符串 加上是变量-->
+                  </a-tree-select>
+                </a-form-item>
+                <a-form-item label="顺序">
+                  <a-input v-model:value="doc.sort"/>
+                </a-form-item>
+                <a-form-item label="内容">
+                  <div style="border: 1px solid #ccc">
+                    <Toolbar
+                        style="border-bottom: 1px solid #ccc"
+                        :editor="editorRef"
+                        :defaultConfig="toolbarConfig"
+                        :mode="mode"
+                    />
+                    <Editor
+                        style="height: 500px; overflow-y: hidden;"
+                        v-model="valueHtml"
+                        :defaultConfig="editorConfig"
+                        :mode="mode"
+                        @onCreated="handleCreated"
+                    />
+                  </div>
+                </a-form-item>
 
 
+              </a-form>
 
+<!--            </a-modal>-->
+          </a-col>
+        </a-row>
       </a-layout-content>
     </a-layout>
   </a-layout-content>
-  <!--  //Q::confirm-loading的含义-->
-  <!--  //A:confirm-loading是一个属性，当点击确定按钮时，会调用handleModalOk方法，handleModalOk方法会调用axios的post方法，保存数据，然后重新加载列表-->
-  <a-modal title="文档" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
-    <a-form :model="doc" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
-      <a-form-item label="名称">
-        <a-input v-model:value="doc.name"/>
-      </a-form-item>
-      <a-form-item label="父文档">
-        <a-tree-select
-            v-model:value="doc.parent"
-            show-search
-            style="width: 100%"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            placeholder="请选择父文档"
-            allow-clear
-            tree-default-expand-all
-            :tree-data="treeSleectData"
-            :fieldNames="{label:'name',key:'id',value:'id' }"
 
-        >
-          <!--不加冒号后面是字符串 加上是变量-->
-        </a-tree-select>
-      </a-form-item>
-      <a-form-item label="顺序">
-        <a-input v-model:value="doc.sort"/>
-      </a-form-item>
-      <a-form-item label="内容">
-        <div style="border: 1px solid #ccc">
-          <Toolbar
-              style="border-bottom: 1px solid #ccc"
-              :editor="editorRef"
-              :defaultConfig="toolbarConfig"
-              :mode="mode"
-          />
-          <Editor
-              style="height: 500px; overflow-y: hidden;"
-              v-model="valueHtml"
-              :defaultConfig="editorConfig"
-              :mode="mode"
-              @onCreated="handleCreated"
-          />
-        </div>
-      </a-form-item>
-
-
-    </a-form>
-  </a-modal>
 </template>
 
 <script lang="ts">
-import { onBeforeUnmount,shallowRef, defineComponent, onMounted, ref, h, createVNode} from 'vue';
+import {onBeforeUnmount, shallowRef, defineComponent, onMounted, ref, h, createVNode} from 'vue';
 import axios from "axios";
 import {message, Modal} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -153,7 +152,7 @@ export default defineComponent({
     })
 
     const toolbarConfig = {}
-    const editorConfig = { placeholder: '请输入内容...' }
+    const editorConfig = {placeholder: '请输入内容...'}
 
     // 组件销毁时，也及时销毁编辑器
     onBeforeUnmount(() => {
@@ -217,6 +216,7 @@ export default defineComponent({
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
     const doc = ref();
+    doc.value= {};
     const handleModalOk = () => {//保存
       modalLoading.value = true;
 
