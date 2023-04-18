@@ -60,7 +60,7 @@
           </a-col>
 
           <a-col :span="16">
-            <a-form-item >
+            <a-form-item>
               <p>
                 <a-button type="primary" @click="add()">
                   新增
@@ -178,6 +178,7 @@ export default defineComponent({
     const handleCreated = (editor: any) => {
       editorRef.value = editor // 记录 editor 实例，重要！
     }
+
     /***
      * @富文本编辑器相关 end
      */
@@ -233,13 +234,16 @@ export default defineComponent({
     doc.value = {};
     const handleSave = () => {//保存
       modalLoading.value = true;
-
+      const editor = editorRef.value;
+      doc.value.content = editor.getHtml();
+      console.log("doc.value", doc.value);
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
         if (data.success) {
           message.success(data.message);
           doc.value = {};
+          editorRef.value.clear();//清空富文本编辑器
           //重新加载列表
           handleQuery();
         } else {

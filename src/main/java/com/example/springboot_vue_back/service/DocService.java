@@ -1,8 +1,10 @@
 package com.example.springboot_vue_back.service;
 
+import com.example.springboot_vue_back.Mapper.ContentMapper;
 import com.example.springboot_vue_back.Mapper.DocMapper;
 import com.example.springboot_vue_back.Utils.CopyUtils;
 import com.example.springboot_vue_back.Utils.SnowFlake;
+import com.example.springboot_vue_back.domain.Content;
 import com.example.springboot_vue_back.domain.Doc;
 import com.example.springboot_vue_back.domain.DocExample;
 import com.example.springboot_vue_back.req.DocQueryReq;
@@ -24,6 +26,8 @@ public class DocService {
 
     @Autowired
     private SnowFlake snowFlake;
+    @Resource
+    private ContentMapper contentMapper;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -100,17 +104,22 @@ public class DocService {
 
     public void save(DocSaveReq req) {
         Doc doc = CopyUtils.copy(req, Doc.class);//将请求参数更新为实体
+        Content content = CopyUtils.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())) {//判断是否存在
             //不存在 新增
 
             doc.setId(snowFlake.nextId());//将生成的雪花算法赋给id
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + doc.getId());
             //文档 阅读 点赞数  初始默认0
-
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         } else {
             //更新
             docMapper.updateByPrimaryKey(doc);
+            int count=contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count==0)contentMapper.insert(content);
         }
 
     }
