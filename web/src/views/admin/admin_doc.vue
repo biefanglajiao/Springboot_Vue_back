@@ -21,8 +21,9 @@
 
 
             </a-form>
+<!--            :后面 跟变量  前面跟字符串-->
             <a-table
-                :v-if="docslevel.length>0"
+                v-if="docslevel.length>0"
                 :columns="columns"
                 :data-source="docs"
                 :row-key="record => record.id"
