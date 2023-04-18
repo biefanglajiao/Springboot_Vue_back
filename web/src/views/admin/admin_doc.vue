@@ -41,12 +41,12 @@
                 编辑
               </a-button>
               <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
+
               <a-popconfirm
                   title="删除后不可回复，是否删除?"
                   ok-text="是"
                   cancel-text="否"
-                  @confirm="delet(record.id)"
-
+                  @confirm="showConfirm(record)"
               >
                 <a-button type="danger">
                   <!--                delete是关键字  @click="delet(record.id)-->
@@ -109,11 +109,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from 'vue';
+import {defineComponent, onMounted, ref, h, createVNode} from 'vue';
 import axios from "axios";
-import {message} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
 import {useRoute} from "vue-router";
+import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -159,7 +160,7 @@ export default defineComponent({
     /*****
      * @方法描述: 编辑表单的提交
      */
-    // doclevel将数据进行包装 方便在分类选择中造出0级分类
+        // doclevel将数据进行包装 方便在分类选择中造出0级分类
     const treeSleectData = ref();
     treeSleectData.value = [];
     const modalLoading = ref<boolean>(false);
@@ -223,8 +224,8 @@ export default defineComponent({
       // Q:这句代码的含义
       // A:这句代码的含义是将record的值赋值给doc.value，但是这样做会导致修改doc.value的值的时候，record的值也会跟着改变，所以这里需要使用深拷贝的方式，将record的值赋值给doc.value
 
-      treeSleectData.value=Tool.copy(docslevel.value);
-      setDisable(treeSleectData.value,record.id)
+      treeSleectData.value = Tool.copy(docslevel.value);
+      setDisable(treeSleectData.value, record.id)
 
       treeSleectData.value.unshift({id: 0, name: "无"});//将无添加到treeSleectData中;;unshift是在数组的开头添加元素
     }
@@ -234,18 +235,18 @@ export default defineComponent({
     const add = () => {
       modalVisible.value = true;
       doc.value = {
-        ebookId:route.query.ebookId
+        ebookId: route.query.ebookId
       };
       doc.value.cover = "url地址";
 
-      treeSleectData.value=Tool.copy(docslevel.value);
+      treeSleectData.value = Tool.copy(docslevel.value);
       treeSleectData.value.unshift({id: 0, name: "无"});
     }
 
     /**
      * 将某节点及其子孙节点全部置于数组中传到后端去删除  递归
      */
-    const  ids: Array<string>=[];
+    const ids: Array<string> = [];
     const setDeleIds = (treeSelectData: any, id: any) => {
       // console.log(treeSelectData, id);
       // 遍历数组，即遍历某一层节点
@@ -255,13 +256,13 @@ export default defineComponent({
           // 如果当前节点就是目标节点
           console.log("disabled", node);
           // 将目标节点id加入到数组中
-         ids.push(node.id);
+          ids.push(node.id);
 
           // 遍历所有子节点，将所有子节点全部都加上disabled
           const children = node.children;
           if (Tool.isNotEmpty(children)) {
             for (let j = 0; j < children.length; j++) {
-            setDeleIds(children, children[j].id)
+              setDeleIds(children, children[j].id)
             }
           }
         } else {
@@ -272,22 +273,46 @@ export default defineComponent({
           }
         }
       }
+      console.log("dadadaasdadadad", ids)
     };
 
     /***
      * @方法描述: 删除按钮方法
      */
     const delet = (id: number) => {
-      setDeleIds(docslevel.value,id);
+      setDeleIds(docslevel.value, id);
       axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
 
         const data = response.data;
-console.log(data);
+        console.log(data);
 
         //重新加载列表
         handleQuery();
       });
     }
+    /***
+     * 二次提示框
+     */
+    const showConfirm = (record: any) => {
+      Modal.confirm({
+        title: '你希望删除掉他们么?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode('div', {}, [
+          h('p', '文档【' + record.name + '】，以及其子节点都将被删除且无法恢复，是否删除？'),
+        ]),
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk() {
+          delet(record.id);
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+        class: 'test',
+      });
+    };
+
     /**
      * @方法描述: 存放普通的文档数据
      */
@@ -353,8 +378,6 @@ console.log(data);
     };
 
 
-
-
     /**
      * @方法描述: 初始进入页面就查一次数据
      */
@@ -384,6 +407,7 @@ console.log(data);
       add,
       delet,
       treeSleectData,//树结构分类
+      showConfirm,//二次提示框
     }
   }
 });
