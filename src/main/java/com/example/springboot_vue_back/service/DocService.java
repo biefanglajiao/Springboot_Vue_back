@@ -36,6 +36,15 @@ public class DocService {
         //将Doc类型转为DocResp类型 使用copyutils工具类
         List<DocQueryResp> docRespList = CopyUtils.copyList(docList, DocQueryResp.class);
 
+        return docRespList;
+    }
+    public List<DocQueryResp> allbyid(Long ebookId) {
+        DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(ebookId);
+        docExample.setOrderByClause("sort asc");//根据sort字段升序排列
+        List<Doc> docList = docMapper.selectByExample(docExample);
+        //将Doc类型转为DocResp类型 使用copyutils工具类
+        List<DocQueryResp> docRespList = CopyUtils.copyList(docList, DocQueryResp.class);
 
         return docRespList;
     }

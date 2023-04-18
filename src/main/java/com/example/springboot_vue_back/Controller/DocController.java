@@ -43,6 +43,13 @@ public class DocController {
         objectComminResp.setContent(list);
         return objectComminResp;
     }
+    @GetMapping("/allbyid/{ebookId}")// 根据id查询书籍  =》找到对应的文档树
+    public ComminResp allbyid(@PathVariable Long ebookId) {
+        ComminResp<List<DocQueryResp>> objectComminResp = new ComminResp<>();
+        List<DocQueryResp> list = docService.allbyid(ebookId);
+        objectComminResp.setContent(list);
+        return objectComminResp;
+    }
 
     @PostMapping("/save")//保存书籍  一般保存类用post
     public ComminResp save(@Valid @RequestBody DocSaveReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
