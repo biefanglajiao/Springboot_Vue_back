@@ -84,7 +84,7 @@
                     show-search
                     style="width: 100%"
                     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                    placeholder="请选择父文档(点击'编辑'或者'新增'后进行选择)"
+                    placeholder="请选择父文档"
                     allow-clear
                     tree-default-expand-all
                     :tree-data="treeSleectData"
@@ -96,6 +96,11 @@
               </a-form-item>
               <a-form-item label="顺序">
                 <a-input v-model:value="doc.sort"/>
+              </a-form-item>
+              <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent">
+                <EyeOutlined/>预览
+              </a-button>
               </a-form-item>
               <a-form-item label="内容">
                 <div style="border: 1px solid #ccc">
@@ -127,6 +132,10 @@
             <!--            </a-modal>-->
           </a-col>
         </a-row>
+
+        <a-drawer width="80%" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+          <div class="wangEditor-container" v-html="previewHtml"></div>
+        </a-drawer>
       </a-layout-content>
     </a-layout>
   </a-layout-content>
@@ -142,10 +151,11 @@ import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
-//todo Bug遗留：如果文档列表为空 新增时没有’无选项‘
+import {EyeOutlined} from '@ant-design/icons-vue';
 export default defineComponent({
   name: 'AdminDoc',
   components: {
+    EyeOutlined,
     Editor,
     Toolbar
   },
@@ -185,6 +195,21 @@ export default defineComponent({
      */
 
 
+    //------------------------富文本预览---start------------------------
+    const  previewHtml = ref();
+    const drawerVisible = ref(false);
+    const handlePreviewContent = () => {
+       // message.info("预览");
+    const html = editorRef.value.getHtml();
+    console.log("html", html);
+    console.log("valueHtml", valueHtml.value);
+    previewHtml.value = html;
+    drawerVisible.value = true;
+    }
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    }
+    //------------------------富文本预览---end---------------------
     const route = useRoute();//路由  带有很多路由的信息
     console.log("路由", route);
     console.log("route.path", route.path);//当前路由的路径(不含参数)
@@ -529,7 +554,14 @@ export default defineComponent({
       mode: 'default', // 或 'simple'
       toolbarConfig,
       editorConfig,
-      handleCreated
+      handleCreated,
+
+      //富文本预览相关
+      drawerVisible,
+      previewHtml,
+      handlePreviewContent,
+      onDrawerClose,
+
     }
   }
 });
