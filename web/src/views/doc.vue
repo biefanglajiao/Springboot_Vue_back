@@ -1,6 +1,8 @@
 <template>
   <a-layout>
     <a-layout-content :style="{background:'#fff', padding:'24px',margin:0,}">
+      <h1 v-if="docslevel.length===0" >此电子书下还没有文档</h1>
+
       <a-row>
         <a-col :span="6">
           <a-tree
