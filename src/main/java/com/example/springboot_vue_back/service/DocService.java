@@ -140,9 +140,10 @@ public class DocService {
         docMapper.deleteByExample(docExample);
 
     }
-    public String finfContent(Long id ){
+    public String findContent(Long id ){
         Content content = contentMapper.selectByPrimaryKey(id);
-        if (ObjectUtils.isEmpty(content.getContent()))return "";
+        if (ObjectUtils.isEmpty(content))
+            return "";
         return content.getContent();
     }
 

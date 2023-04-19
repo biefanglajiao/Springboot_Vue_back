@@ -31,7 +31,7 @@ public class DocController {
         @GetMapping("/find-content/{id}")//模糊查询书籍
     public ComminResp findContent( @PathVariable  Long id) {
         ComminResp<String> objectComminResp = new ComminResp<>();
-      String content = docService.finfContent(id);
+      String content = docService.findContent(id);
         objectComminResp.setContent(content);
         return objectComminResp;
     }
