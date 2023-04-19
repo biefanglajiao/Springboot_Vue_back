@@ -339,9 +339,15 @@ export default defineComponent({
         ebookId: route.query.ebookId
       };
       doc.value.cover = "url地址";
-
-      treeSleectData.value = Tool.copy(docslevel.value);
-      treeSleectData.value.unshift({id: 0, name: "无"});
+console.log("docslevel.value",docslevel.value);
+console.log(docslevel.value.length);
+if (docslevel.value.length > 0) {
+  treeSleectData.value = Tool.copy(docslevel.value);
+  treeSleectData.value.unshift({id: 0, name: "无"});
+}else {
+  treeSleectData.value=[];
+  treeSleectData.value.unshift({id: 0, name: "无"});
+}
     }
 
     /**
