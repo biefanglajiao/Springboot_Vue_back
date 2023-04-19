@@ -21,7 +21,7 @@
 
 
             </a-form>
-<!--            :后面 跟变量  前面跟字符串-->
+            <!--            :后面 跟变量  前面跟字符串-->
             <a-table
                 v-if="docslevel.length>0"
                 :columns="columns"
@@ -237,6 +237,7 @@ export default defineComponent({
       modalLoading.value = true;
       const editor = editorRef.value;
       doc.value.content = editor.getHtml();
+      doc.value.ebookId = route.query.ebookId;
       console.log("doc.value", doc.value);
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
@@ -289,8 +290,8 @@ export default defineComponent({
      *@方法描述: 单击编辑按钮方法
      */
     const edit = (record: any) => {
-     const editor=editorRef.value;
-     editor.setHtml("");//单击编辑时清空富文本框
+      const editor = editorRef.value;
+      editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       // doc.value = record;
       doc.value = Tool.copy(record);
@@ -306,7 +307,7 @@ export default defineComponent({
      *@方法描述: 单击新增按钮方法
      */
     const add = () => {
-      const editor=editorRef.value;
+      const editor = editorRef.value;
       editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       doc.value = {
@@ -437,22 +438,36 @@ export default defineComponent({
      */
     const handleQuery = () => {
       loading.value = true;
-      axios.get("/doc/allbyid/"+route.query.ebookId,).then((response) => {
+      axios.get("/doc/allbyid/" + route.query.ebookId,).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
           docs.value = data.content;
+          console.log("初始数据长度", data.content.length);
           console.log("初始数据", docs.value);
           docslevel.value = [];
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
-          console.log("处理后的数据", docslevel.value)
+          console.log("处理后的数据", docslevel.value);
 
-          //父文档下拉框初始化 ，相当于默认点击新增
-          treeSleectData.value=Tool.copy(docslevel.value);
-          //为选择树新增一个无
-          treeSleectData.value.unshift({id:0,name:"无"});
-          console.log("treeSleectData",treeSleectData.value);
+
+          if (data.content.length > 0) {
+            //父文档下拉框初始化 ，相当于默认点击新增
+            treeSleectData.value = Tool.copy(docslevel.value);
+            //为选择树新增一个无
+            treeSleectData.value.unshift({id: 0, name: "无"});
+          } else {
+            treeSleectData.value = [];
+            treeSleectData.value.unshift({id: 0, name: "无"});
+          }
+
+          //Q：如果treeSleectData为空为什么这里就无法添加了
+          //A：因为treeSleectData是一个响应式对象，当它的值发生改变时，会触发视图的更新，但是在初始化时，它的值是空的，所以无法触发视图的更新，所以无法添加
+          //Q：那么如何解决呢？
+          //A：在初始化时，给它一个初始值，比如空数组，这样就可以触发视图的更新了
+          //Q：具体语句为？
+          //A：treeSleectData.value=[]
+          console.log("treeSleectData", treeSleectData.value);
         } else {
           message.error(data.message);
         }
