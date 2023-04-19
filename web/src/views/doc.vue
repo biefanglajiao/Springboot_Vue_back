@@ -9,6 +9,7 @@
               @select="onSelect"
               :replaceFields="{title:'name',key:'id',value:'id'}"
               :defaultExpandAll="true"
+              :defaultSelectedKeys="defaultSelectedKeys"
           >
 <!--            //Q: @select的含义是什么-->
 <!--            //A:select是一个事件，当树节点被选中时触发，返回值为选中节点的相关信息-->
@@ -54,6 +55,27 @@ export default defineComponent({
      */
     const docslevel = ref();
     docslevel.value = [];//如果不初始化  v-if判断会报错
+
+
+    const defaultSelectedKeys = ref();//存放默认选中的节点（初始选中打开的文档）
+    defaultSelectedKeys.value = [];
+
+    const  html=ref();
+    /***
+     * @方法描述: 内容数据获取方法
+     */
+    const handleQueryContent = (id:number) => {
+      axios.get("/doc/find-content/" + id,).then((response) => {
+
+        const data = response.data;
+        if (data.success) {
+          html.value=data.content;
+          console.log("内容数据", html.value);
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
     /***
      * @方法描述: 数据获取方法
      */
@@ -69,27 +91,16 @@ export default defineComponent({
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
           console.log("处理后的数据", docslevel.value)
+          if (Tool.isNotEmpty(docslevel)){
+            defaultSelectedKeys.value = [docslevel.value[0].id];
+            handleQueryContent(docslevel.value[0].id);
+          }
         } else {
           message.error(data.message);
         }
       });
     };
-    const  html=ref();
-    /***
-     * @方法描述: 内容数据获取方法
-     */
-    const handleQueryContent = (id:number) => {
-      axios.get("/doc/find-content/" + id,).then((response) => {
 
-        const data = response.data;
-        if (data.success) {
-         html.value=data.content;
-         console.log("内容数据", html.value);
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
       handleQueryContent(selectedKeys[0]);
@@ -104,6 +115,7 @@ export default defineComponent({
       docslevel,
       html,
       onSelect,
+      defaultSelectedKeys,
 
     }
   }
