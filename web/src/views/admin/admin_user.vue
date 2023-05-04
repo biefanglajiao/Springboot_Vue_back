@@ -64,7 +64,9 @@
   <a-modal title="用户表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
     <a-form :model="user" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
       <a-form-item label="登录名">
-        <a-input v-model:value="user.loginName"/>
+        <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
+<!--        :disabled="user.id" id是主键，新增时id为空，修改时id不为空，所以新增时可以输入，修改时不可以输入-->
+<!--        !!可以绕过类型校验（前端f12的报错提示）-->
       </a-form-item>
       <a-form-item label="昵称">
         <a-input v-model:value="user.name"/>
@@ -81,6 +83,9 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
+// 对外部引用爆红的解决方法
+declare let hexMd5: any;
+declare let KEY: any;
 
 export default defineComponent({
   name: 'AdminUser',
@@ -122,6 +127,7 @@ export default defineComponent({
     const categoryIds = ref();
     const handleModalOk = () => {//保存
       modalLoading.value = true;
+      user.value.password=hexMd5(user.value.password+KEY);
         axios.post("/user/save", user.value).then((response) => {
           modalLoading.value = false;//有返回就关闭加载
           const data = response.data;//data==common,resp

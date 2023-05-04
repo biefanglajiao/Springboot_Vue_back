@@ -10,7 +10,6 @@ public class UserSaveReq {
 @NotNull(message = "【用户昵称】不能为空")
     private String name;
 @NotNull(message = "【密码】不能为空")
-@Pattern(regexp="^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$",message = "【密码】必须是6-20位数字和字母的组合")
     private String password;
 
     public Long getId() {

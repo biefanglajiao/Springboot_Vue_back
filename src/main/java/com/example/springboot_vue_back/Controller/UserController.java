@@ -6,6 +6,7 @@ import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.service.UserService;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +29,8 @@ public class UserController {
 
     @PostMapping("/save")//保存书籍  一般保存类用post
     public ComminResp save(@RequestBody @Valid UserSaveReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+       req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));//密码加密 将前端的明文密码转为32位MD5
+
         ComminResp objectComminResp = new ComminResp<>();
         userService.save(req);
 
