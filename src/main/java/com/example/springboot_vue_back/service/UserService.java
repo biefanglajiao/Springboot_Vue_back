@@ -5,6 +5,8 @@ import com.example.springboot_vue_back.Utils.CopyUtils;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.User;
 import com.example.springboot_vue_back.domain.UserExample;
+import com.example.springboot_vue_back.exception.BusinessException;
+import com.example.springboot_vue_back.exception.BusinessExceptionCode;
 import com.example.springboot_vue_back.req.UserQueryReq;
 import com.example.springboot_vue_back.req.UserSaveReq;
 import com.example.springboot_vue_back.resp.UserQueryResp;
@@ -12,8 +14,10 @@ import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mysql.cj.conf.ConnectionUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -69,15 +73,37 @@ public class UserService {
         User user= CopyUtils.copy(req,User.class);//将请求参数更新为实体
         if (ObjectUtils.isEmpty(req.getId())){//判断是否存在
             //不存在 新增
-
-            user.setId( snowFlake.nextId());//将生成的雪花算法赋给id
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+user.getId());
-            userMapper.insert(user);
+            User userDB=selectByLoginName(req.getLoginName());//根据登录名查询用户
+            if (ObjectUtils.isEmpty(userDB)) {
+                //新增
+                user.setId(snowFlake.nextId());//将生成的雪花算法赋给id
+                userMapper.insert(user);
+            }else {
+                //已存在  //使用自定义异常类
+                throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
         }else {
             //更新
             userMapper.updateByPrimaryKey(user);
         }
 
+    }
+
+    /***
+     * 根据登录名查询用户
+     * @param loginName
+     * @return
+     */
+    public User selectByLoginName(String loginName){
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andLoginNameEqualTo(loginName);
+        List<User> userList = userMapper.selectByExample(userExample);
+      if (CollectionUtils.isEmpty(userList)){
+          return null;
+    }else {
+          return userList.get(0);
+      }
     }
 
     public void delete(long id){
