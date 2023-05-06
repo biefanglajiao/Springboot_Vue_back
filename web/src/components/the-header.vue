@@ -24,9 +24,12 @@
     <router-link to="/about">关于我们</router-link>
     </a-menu-item>
 
-  <a-menu-item class="login-menu" style="float:right" @click="showLoginModal">
+  <a class="login-menu" style="float:right" v-show="user.id">
+    <span>您好：{{user.loginName}}</span>
+  </a>
+  <a class="login-menu" style="float:right" @click="showLoginModal" v-show="!user.id">
     <span>登录</span>
-  </a-menu-item>
+  </a>
 <!--  //todo 登录框显示两个bug-->
 </a-menu>
 
@@ -59,10 +62,14 @@ export default defineComponent({
   name: 'the-header',
 
   setup() {
+    //用于登录
     const loginUser = ref({
       loginName: '',
       password: ''
     });
+    //用于回显
+    const user = ref();
+    user.value={};
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
     const showLoginModal = () => {
@@ -79,6 +86,8 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           loginModalVisible.value = false;
+          user.value=data.content;
+          console.log(user.value);
           message.success("登录成功");
         } else {
           message.error(data.message);
@@ -97,6 +106,9 @@ export default defineComponent({
         loginModalLoading,
         showLoginModal,
         login,
+
+
+      user,
       }
 
 
