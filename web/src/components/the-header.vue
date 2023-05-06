@@ -50,33 +50,56 @@
 </template>
 <script lang="ts">
 import { defineComponent ,ref} from 'vue';
+import axios from "axios";
+import {message} from "ant-design-vue";
+declare let hexMd5:any;
+declare let KEY:any;
 
 export default defineComponent({
   name: 'the-header',
 
-  setup(){
-    const loginUser=ref({
-      loginName:'',
-      password:''
+  setup() {
+    const loginUser = ref({
+      loginName: '',
+      password: ''
     });
-    const loginModalVisible=ref(false);
-    const loginModalLoading=ref(false);
-    const showLoginModal=()=>{
-      loginModalVisible.value=true;
+    const loginModalVisible = ref(false);
+    const loginModalLoading = ref(false);
+    const showLoginModal = () => {
+      loginModalVisible.value = true;
     };
 
     //登录
-    const login=()=>{
-     console.log("login");
-    };
+    const login = () => {
+      console.log("login");
+      loginModalLoading.value = true;
+      loginUser.value.password = hexMd5(loginUser.value.password + KEY);
+      axios.post('/user/login', loginUser.value).then((response) => {
+        loginModalLoading.value = false;
+        const data = response.data;
+        if (data.success) {
+          loginModalVisible.value = false;
+          message.success("登录成功");
+        } else {
+          message.error(data.message);
 
-    return{
-      loginUser,
-      loginModalVisible,
-      loginModalLoading,
-      showLoginModal,
-      login,
+        }
+
+      });
     }
+
+
+
+
+    return {
+        loginUser,
+        loginModalVisible,
+        loginModalLoading,
+        showLoginModal,
+        login,
+      }
+
+
   }
 });
 

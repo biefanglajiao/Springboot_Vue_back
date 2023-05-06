@@ -1,5 +1,6 @@
 package com.example.springboot_vue_back.req;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class UserLoginReq {
@@ -7,9 +8,9 @@ public class UserLoginReq {
 
 
         private Long id;
-        @NotNull(message = "【用户名】不能为空")
+        @NotEmpty(message = "【用户名】不能为空")
         private String loginName;
-        @NotNull(message = "【密码】不能为空")
+        @NotEmpty(message = "【密码】不能为空")
         private String password;
 
         public Long getId() {
