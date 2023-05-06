@@ -54,7 +54,7 @@
   </a-layout>
 </template>
 <script lang="ts">
-import { defineComponent ,ref} from 'vue';
+import { defineComponent ,ref,computed} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import store from "@/store";
@@ -71,8 +71,8 @@ export default defineComponent({
       password: ''
     });
     //用于回显
-    const user = ref();
-    user.value={};
+   const user=computed(()=>store.state.user); //从store中获取用户信息
+
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
     const showLoginModal = () => {
@@ -89,10 +89,9 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           loginModalVisible.value = false;
-          user.value=data.content;
-          console.log(user.value);
+
           message.success("登录成功");
-          store.commit('setUser',user.value);//将用户信息存入store
+          store.commit('setUser',data.content);//将用户信息存入store
         } else {
           message.error(data.message);
 
