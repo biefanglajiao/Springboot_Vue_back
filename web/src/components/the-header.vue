@@ -6,29 +6,31 @@
 <a-menu
     theme="dark"
     mode="horizontal"
-
+    class="menu-flex"
     :style="{ lineHeight: '64px' }"
 >
-  <a-menu-item key="home">
+  <a-menu-item key="home" class="menu-left">
     <router-link to="/">首页</router-link>
     </a-menu-item>
-  <a-menu-item key="admin_book">
+  <a-menu-item key="admin_book" >
     <router-link to="/admin/ebook">电子书管理</router-link>
    </a-menu-item>
-  <a-menu-item key="admin_user">
+  <a-menu-item key="admin_user" >
     <router-link to="/admin/user">用户管理</router-link>
    </a-menu-item>
-  <a-menu-item key="admin_catepory">
+
+  <a-menu-item key="admin_catepory" >
     <router-link to="/admin/category">分类管理</router-link>
    </a-menu-item>
-  <a-menu-item key="about">
+  <a-menu-item key="about" >
     <router-link to="/about">关于我们</router-link>
     </a-menu-item>
 
-  <a-menu-item class="login-menu" v-if="user.id">
+
+  <a-menu-item class="menu-right" v-if="user.id">
     <span>您好：{{user.loginName}}</span>
   </a-menu-item>
-  <a-menu-item class="login-menu"  @click="showLoginModal" v-else>
+  <a-menu-item class="menu-right"  @click="showLoginModal" v-else>
     <span>登录</span>
   </a-menu-item>
 
@@ -39,7 +41,7 @@
         @confirm="logout()"
     >
 
-  <a-menu-item class="login-menu"  v-if="user.id">
+  <a-menu-item class="menu-right"  v-if="user.id">
     <span>退出登录</span>
   </a-menu-item>
     </a-popconfirm>
@@ -150,9 +152,22 @@ export default defineComponent({
 
 </script>
 <style>
-.login-menu {
+.menu-flex {
+  display: flex;
+  justify-content: space-between;
+}
 
+.menu-right {
   color: white;
   padding-left: 10px;
+  order: 1;
+
+
 }
+
+.menu-left {
+  order: 2;
+
+}
+
 </style>
