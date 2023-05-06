@@ -1,8 +1,11 @@
 package com.example.springboot_vue_back.resp;
 
-import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Service;
 
-public class UserLoginResp {
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+
+public class UserLoginResp implements Serializable {
 
 
 
@@ -10,6 +13,7 @@ public class UserLoginResp {
         private String loginName;
 
         private String password;
+        private  String token;
 
         public Long getId() {
             return id;
@@ -37,18 +41,23 @@ public class UserLoginResp {
             this.password = password;
         }
 
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(getClass().getSimpleName());
-            sb.append(" [");
-            sb.append("Hash = ").append(hashCode());
-            sb.append(", id=").append(id);
-            sb.append(", loginName=").append(loginName);
-            sb.append(", password=").append(password);
-            sb.append("]");
-            return sb.toString();
-        }
+    @Override
+    public String toString() {
+        return "UserLoginResp{" +
+                "id=" + id +
+                ", loginName='" + loginName + '\'' +
+                ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
+                '}';
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
 
 }
