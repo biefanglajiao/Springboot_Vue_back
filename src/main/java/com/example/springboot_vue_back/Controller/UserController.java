@@ -1,5 +1,6 @@
 package com.example.springboot_vue_back.Controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.req.UserLoginReq;
 import com.example.springboot_vue_back.req.UserQueryReq;
@@ -10,6 +11,7 @@ import com.example.springboot_vue_back.resp.UserLoginResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.service.UserService;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -79,7 +81,7 @@ public class UserController {
         Long token = snowFlake.nextId();
         LOG.info("生成单点登录token： {}，并放入redis", token);
                 login.setToken(token.toString());//将token存入login中
-        redisTemplate.opsForValue().set(token, login, 3600 * 24, TimeUnit.SECONDS);//将token存入redis中 有效期为一天
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(login), 3600 * 24, TimeUnit.SECONDS);//将token存入redis中 有效期为一天
 
         resp.setContent(login);
         return resp;

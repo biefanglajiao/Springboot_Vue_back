@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class UserLoginResp implements Serializable {
+public class UserLoginResp  {
 
 
 
