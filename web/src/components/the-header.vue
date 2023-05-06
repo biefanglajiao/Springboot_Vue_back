@@ -1,6 +1,7 @@
 <!--将header写成自定义组件-->
 <template>
-<a-layout-header class="header">
+  <a-layout class="layout">
+<a-layout-header >
 <div class="logo"/>
 <a-menu
     theme="dark"
@@ -24,13 +25,13 @@
     <router-link to="/about">关于我们</router-link>
     </a-menu-item>
 
-  <a class="login-menu" style="float:right" v-show="user.id">
+  <a-menu-item class="login-menu" style="float:right" v-if="user.id">
     <span>您好：{{user.loginName}}</span>
-  </a>
-  <a class="login-menu" style="float:right" @click="showLoginModal" v-show="!user.id">
+  </a-menu-item>
+  <a-menu-item class="login-menu" style="float:right" @click="showLoginModal" v-else>
     <span>登录</span>
-  </a>
-<!--  //todo 登录框显示两个bug-->
+  </a-menu-item>
+
 </a-menu>
 
   <a-modal
@@ -50,6 +51,7 @@
   </a-modal>
 
 </a-layout-header>
+  </a-layout>
 </template>
 <script lang="ts">
 import { defineComponent ,ref} from 'vue';
