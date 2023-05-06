@@ -71,8 +71,9 @@
       <a-form-item label="昵称">
         <a-input v-model:value="user.name"/>
       </a-form-item>
-      <a-form-item label="密码">
+      <a-form-item label="密码"  v-show="!user.id">
         <a-input v-model:value="user.password"/>
+<!--        v-show  是否展示、、此时新增显示，编辑不显示-->
       </a-form-item>
     </a-form>
   </a-modal>

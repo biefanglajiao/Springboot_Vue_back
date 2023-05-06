@@ -85,6 +85,7 @@ public class UserService {
         }else {
             //更新
             user.setLoginName(null);//登录名不更新  防止前端校验被绕过
+            user.setPassword(null);//密码不更新  防止前端校验被绕过
             userMapper.updateByPrimaryKeySelective(user);//Q:updateByPrimaryKeySelective 有选择的更新?
             //A: updateByPrimaryKeySelective 有选择的更新，如果传入的参数为null，则不更新数据库中已有的数据
         }
