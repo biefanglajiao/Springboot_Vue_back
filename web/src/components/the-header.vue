@@ -25,12 +25,24 @@
     <router-link to="/about">关于我们</router-link>
     </a-menu-item>
 
-  <a-menu-item class="login-menu" style="float:right" v-if="user.id">
+  <a-menu-item class="login-menu" v-if="user.id">
     <span>您好：{{user.loginName}}</span>
   </a-menu-item>
-  <a-menu-item class="login-menu" style="float:right" @click="showLoginModal" v-else>
+  <a-menu-item class="login-menu"  @click="showLoginModal" v-else>
     <span>登录</span>
   </a-menu-item>
+
+  <a-popconfirm
+        title="确认退出登录?"
+        ok-text="是"
+        cancel-text="否"
+        @confirm="logout()"
+    >
+
+  <a-menu-item class="login-menu"  v-if="user.id">
+    <span>退出登录</span>
+  </a-menu-item>
+    </a-popconfirm>
 
 </a-menu>
 
@@ -99,6 +111,21 @@ export default defineComponent({
 
       });
     }
+    //退出登录
+    const logout = () => {
+      console.log("logout");
+       axios.get('/user/logout/'+ user.value.token).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success("退出登录成功");
+          store.commit('setUser',{});//将用户信息制空
+        } else {
+          message.error(data.message);
+
+        }
+
+      });
+    }
 
 
 
@@ -109,6 +136,7 @@ export default defineComponent({
         loginModalLoading,
         showLoginModal,
         login,
+      logout,
 
 
       user,

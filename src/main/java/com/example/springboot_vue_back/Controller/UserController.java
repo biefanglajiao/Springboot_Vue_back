@@ -86,4 +86,14 @@ public class UserController {
         resp.setContent(login);
         return resp;
     }
+
+
+    @GetMapping("/logout/{token}")
+    public ComminResp logout(@PathVariable String token) {//@PathVariable 用于获取url中的数据
+        ComminResp objectComminResp = new ComminResp<>();
+       redisTemplate.delete(token);//删除redis中的token
+        LOG.info("从redis中删除token：{}", token);
+
+        return objectComminResp;
+    }
 }
