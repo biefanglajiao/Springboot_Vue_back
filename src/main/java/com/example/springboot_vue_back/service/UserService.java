@@ -8,6 +8,7 @@ import com.example.springboot_vue_back.domain.UserExample;
 import com.example.springboot_vue_back.exception.BusinessException;
 import com.example.springboot_vue_back.exception.BusinessExceptionCode;
 import com.example.springboot_vue_back.req.UserQueryReq;
+import com.example.springboot_vue_back.req.UserResetPasswordReq;
 import com.example.springboot_vue_back.req.UserSaveReq;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 
@@ -41,7 +42,7 @@ public class UserService {
         if (!ObjectUtils.isEmpty(req.getLoginName())) {
             criteria.andLoginNameEqualTo(req.getLoginName());
         }
-     
+
 
         List<User> userList = userMapper.selectByExample(userExample);
 
@@ -67,29 +68,36 @@ public class UserService {
     }
 
 
-
-
-    public void save(UserSaveReq req){
-        User user= CopyUtils.copy(req,User.class);//将请求参数更新为实体
-        if (ObjectUtils.isEmpty(req.getId())){//判断是否存在
+    public void save(UserSaveReq req) {
+        User user = CopyUtils.copy(req, User.class);//将请求参数更新为实体
+        if (ObjectUtils.isEmpty(req.getId())) {//判断是否存在
             //不存在 新增
-            User userDB=selectByLoginName(req.getLoginName());//根据登录名查询用户
+            User userDB = selectByLoginName(req.getLoginName());//根据登录名查询用户
             if (ObjectUtils.isEmpty(userDB)) {
                 //新增
                 user.setId(snowFlake.nextId());//将生成的雪花算法赋给id
                 userMapper.insert(user);
-            }else {
+            } else {
                 //已存在  //使用自定义异常类
                 throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
             }
-        }else {
+        } else {
             //更新
             user.setLoginName(null);//登录名不更新  防止前端校验被绕过
             user.setPassword(null);//密码不更新  防止前端校验被绕过
             userMapper.updateByPrimaryKeySelective(user);//Q:updateByPrimaryKeySelective 有选择的更新?
             //A: updateByPrimaryKeySelective 有选择的更新，如果传入的参数为null，则不更新数据库中已有的数据
         }
+    }
 
+    /**
+     * 修改密码
+     */
+
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtils.copy(req, User.class);//将请求参数更新为实体
+        userMapper.updateByPrimaryKeySelective(user);//Q:updateByPrimaryKeySelective 有选择的更新?
+        //A: updateByPrimaryKeySelective 有选择的更新，如果传入的参数为null，则不更新数据库中已有的数据
     }
 
     /***
@@ -97,19 +105,19 @@ public class UserService {
      * @param loginName
      * @return
      */
-    public User selectByLoginName(String loginName){
+    public User selectByLoginName(String loginName) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andLoginNameEqualTo(loginName);
         List<User> userList = userMapper.selectByExample(userExample);
-      if (CollectionUtils.isEmpty(userList)){
-          return null;
-    }else {
-          return userList.get(0);
-      }
+        if (CollectionUtils.isEmpty(userList)) {
+            return null;
+        } else {
+            return userList.get(0);
+        }
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         userMapper.deleteByPrimaryKey(id);
 
     }

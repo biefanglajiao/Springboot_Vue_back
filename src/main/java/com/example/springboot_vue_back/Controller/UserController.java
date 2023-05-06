@@ -1,6 +1,7 @@
 package com.example.springboot_vue_back.Controller;
 
 import com.example.springboot_vue_back.req.UserQueryReq;
+import com.example.springboot_vue_back.req.UserResetPasswordReq;
 import com.example.springboot_vue_back.req.UserSaveReq;
 import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
@@ -33,6 +34,15 @@ public class UserController {
 
         ComminResp objectComminResp = new ComminResp<>();
         userService.save(req);
+
+        return objectComminResp;
+    }
+    @PostMapping("/reset-password")//保存书籍  一般保存类用post
+    public ComminResp resetPassword(@RequestBody @Valid UserResetPasswordReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+       req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));//密码加密 将前端的明文密码转为32位MD5
+
+        ComminResp objectComminResp = new ComminResp<>();
+        userService.resetPassword(req);
 
         return objectComminResp;
     }

@@ -38,9 +38,12 @@
               <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
+              <a-button type="primary" @click="resetPassword(record)">
+                重置密码
+              </a-button>
               <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
               <a-popconfirm
-                  title="删除后不可回复，是否删除?"
+                  title="删除后不可恢复，是否删除?"
                   ok-text="是"
                   cancel-text="否"
                   @confirm="delet(record.id)"
@@ -73,6 +76,15 @@
       </a-form-item>
       <a-form-item label="密码"  v-show="!user.id">
         <a-input v-model:value="user.password"/>
+<!--        v-show  是否展示、、此时新增显示，编辑不显示-->
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
+  <a-modal title="重置密码" v-model:visible="resetModalVisible" :confirm-loading="resetModalLoading" @ok="handleresetModalOk">
+    <a-form :model="user" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
+      <a-form-item label="新密码"  >
+        <a-input v-model:value="user.password" />
 <!--        v-show  是否展示、、此时新增显示，编辑不显示-->
       </a-form-item>
     </a-form>
@@ -124,6 +136,8 @@ export default defineComponent({
      */
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
+    const resetModalLoading = ref<boolean>(false);
+    const resetModalVisible = ref<boolean>(false);
     const user = ref();
     const categoryIds = ref();
     const handleModalOk = () => {//保存
@@ -153,6 +167,37 @@ export default defineComponent({
       modalVisible.value = true;
       // user.value = record;
       user.value = Tool.copy(record);
+    }
+
+    const handleresetModalOk = () => {//保存
+      resetModalLoading.value = true;
+      user.value.password=hexMd5(user.value.password+KEY);
+        axios.post("/user/reset-password", user.value).then((response) => {
+          resetModalLoading.value = false;//有返回就关闭加载
+          const data = response.data;//data==common,resp
+          if (data.success) {
+            resetModalVisible.value = false;//关闭视图
+            //重新加载列表
+            handleQuery({
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            });
+          } else {
+            message.error(data.message);
+          }
+
+        });
+
+    };
+    /***
+     *@方法描述: 单击重置密码按钮方法
+     */
+    const resetPassword= (record: any) => {
+      resetModalVisible.value = true;
+      // user.value = record;
+      user.value = Tool.copy(record);
+      user.value.password="";
+      //todo 前端密码校验
     }
 
 
@@ -254,6 +299,13 @@ export default defineComponent({
       edit,
       add,
       delet,
+
+
+      //   重置密码相关
+      resetModalLoading,
+      resetModalVisible,
+      handleresetModalOk,
+      resetPassword,
 
       /**
        * 分类相关
