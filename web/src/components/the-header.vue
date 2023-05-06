@@ -57,6 +57,7 @@
 import { defineComponent ,ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import store from "@/store";
 declare let hexMd5:any;
 declare let KEY:any;
 
@@ -91,6 +92,7 @@ export default defineComponent({
           user.value=data.content;
           console.log(user.value);
           message.success("登录成功");
+          store.commit('setUser',user.value);//将用户信息存入store
         } else {
           message.error(data.message);
 

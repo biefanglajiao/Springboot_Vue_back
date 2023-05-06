@@ -1,12 +1,19 @@
 import { createStore } from 'vuex'
 
-export default createStore({
+const store= createStore({
   state: {
+    user:{}
   },
-  mutations: {
+  mutations: {//同步
+    setUser(state,user){
+      state.user = user;
+    }
   },
-  actions: {
+  actions: {//异步
   },
   modules: {
   }
 })
+
+
+export default store;
