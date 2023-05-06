@@ -7,15 +7,19 @@ import com.example.springboot_vue_back.domain.User;
 import com.example.springboot_vue_back.domain.UserExample;
 import com.example.springboot_vue_back.exception.BusinessException;
 import com.example.springboot_vue_back.exception.BusinessExceptionCode;
+import com.example.springboot_vue_back.req.UserLoginReq;
 import com.example.springboot_vue_back.req.UserQueryReq;
 import com.example.springboot_vue_back.req.UserResetPasswordReq;
 import com.example.springboot_vue_back.req.UserSaveReq;
+import com.example.springboot_vue_back.resp.UserLoginResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 
 import com.example.springboot_vue_back.resp.PageResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysql.cj.conf.ConnectionUrl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +30,8 @@ import java.util.List;
 
 @Service
 public class UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     @Resource
     private UserMapper userMapper;
 
@@ -98,6 +104,30 @@ public class UserService {
         User user = CopyUtils.copy(req, User.class);//将请求参数更新为实体
         userMapper.updateByPrimaryKeySelective(user);//Q:updateByPrimaryKeySelective 有选择的更新?
         //A: updateByPrimaryKeySelective 有选择的更新，如果传入的参数为null，则不更新数据库中已有的数据
+    }
+
+    /***
+     * 登录
+     * @param req
+     * @return
+     */
+    public UserLoginResp login(UserLoginReq req) {
+        User user = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(user)) {
+            LOG.info("用户名不存在, {}", req.getLoginName());
+            //用户不存在
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        } else {
+            if (user.getPassword().equals(req.getPassword())) {
+                //登录成功
+                UserLoginResp userLoginResp = CopyUtils.copy(user, UserLoginResp.class);
+                return userLoginResp;
+            } else {
+                //密码不对
+                LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", req.getPassword(), user.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
     }
 
     /***

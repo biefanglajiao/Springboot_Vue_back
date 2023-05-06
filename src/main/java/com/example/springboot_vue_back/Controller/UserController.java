@@ -1,9 +1,11 @@
 package com.example.springboot_vue_back.Controller;
 
+import com.example.springboot_vue_back.req.UserLoginReq;
 import com.example.springboot_vue_back.req.UserQueryReq;
 import com.example.springboot_vue_back.req.UserResetPasswordReq;
 import com.example.springboot_vue_back.req.UserSaveReq;
 import com.example.springboot_vue_back.resp.ComminResp;
+import com.example.springboot_vue_back.resp.UserLoginResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.service.UserService;
@@ -53,5 +55,15 @@ public class UserController {
         userService.delete(id);
 
         return objectComminResp;
+    }
+
+    @PostMapping("/login")//保存书籍  一般保存类用post
+    public ComminResp login(@RequestBody @Valid UserLoginReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));//密码加密 将前端的明文密码转为32位MD5
+
+        ComminResp<UserLoginResp> resp = new ComminResp<>();
+        UserLoginResp login = userService.login(req);
+  resp.setContent(login);
+        return resp;
     }
 }
