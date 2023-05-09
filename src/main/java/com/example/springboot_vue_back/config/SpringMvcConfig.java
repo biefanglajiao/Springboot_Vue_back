@@ -21,10 +21,12 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/text/**",
+                        "/redis/**",
                         "/user/login",
-                        "category/all",
-                        "doc/all/**",
-                        "doc/find-content/**"
+                        "/category/all","/category/list",
+                        "/ebook/list",
+                        "/doc/all/**",
+                        "/doc/find-content/**"
                 );//拦截所有请求，除了exculdePathPatterns中的请求
     }
 

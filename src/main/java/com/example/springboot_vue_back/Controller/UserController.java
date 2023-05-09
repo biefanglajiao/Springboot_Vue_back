@@ -82,7 +82,7 @@ public class UserController {
         LOG.info("生成单点登录token： {}，并放入redis", token);
                 login.setToken(token.toString());//将token存入login中
         redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(login), 3600 * 24, TimeUnit.SECONDS);//将token存入redis中 有效期为一天
-
+//前后端都用tostring  才能保证数据一直可以被对比
         resp.setContent(login);
         return resp;
     }

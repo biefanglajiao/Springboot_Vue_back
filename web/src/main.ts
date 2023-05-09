@@ -5,6 +5,7 @@ import store from './store'
 import Antd from  'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import axios from 'axios'
+import {Tool} from "@/utils/tool";
 
 createApp(App).use(store).use(router).use(Antd).mount('#app');
 
@@ -19,6 +20,11 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER;
  */
 axios.interceptors.request.use(function (config) {
     console.log("请求拦截器",config);
+    const token=store.state.user.token;
+    if(Tool.isNotEmpty(token)){
+        config.headers.token=token;
+        console.log("请求头新增token;"+token);
+    }
     return config;
 },
 function (error) {
