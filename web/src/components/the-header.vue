@@ -12,17 +12,17 @@
   <a-menu-item key="home" class="menu-left">
     <router-link to="/">首页</router-link>
     </a-menu-item>
-  <a-menu-item key="admin_book" :style="user.id? {} : {display:'none'}">
+  <a-menu-item key="admin_book" v-if="user.id">
     <router-link to="/admin/ebook">电子书管理</router-link>
    </a-menu-item>
-  <a-menu-item key="admin_user" :style="user.id? {} : {display:'none'}">
+  <a-menu-item key="admin_user" v-if="user.id">
     <router-link to="/admin/user">用户管理</router-link>
    </a-menu-item>
 
-  <a-menu-item key="admin_catepory" :style="user.id? {} : {display:'none'}">
+  <a-menu-item key="admin_catepory" v-if="user.id">
     <router-link to="/admin/category">分类管理</router-link>
    </a-menu-item>
-  <a-menu-item key="about" >
+  <a-menu-item key="about" v-else>
     <router-link to="/about">关于我们</router-link>
     </a-menu-item>
 <!--  :style="user.id? {} : {display:'none'}" 在menu上使用v-show无效，所以通过自定义css达到不登陆不显示效果-->
