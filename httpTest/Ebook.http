@@ -4,4 +4,7 @@ GET http://localhost:8080/ebook/list?page=1&size=1001
 Accept: application/json
 
 ###
-GET http://localhost:8080/ebook/a
+POST http://localhost:8080/ebook/save
+Content-Type: application/json
+
+{}
