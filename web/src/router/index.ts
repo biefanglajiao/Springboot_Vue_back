@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/home.vue'
+import store from "@/store";
+import {Tool} from "@/utils/tool";
 
 //非惰性 全局加载、
 
@@ -20,11 +22,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin/ebook',
     name: 'AdminEbook',
+    meta:{loginRequire:true},
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_ebook.vue')
   } ,
   {
     path: '/admin/category',
     name: 'AdminCategory',
+    meta:{loginRequire:true},
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_category.vue')
   },
 // 非惰性 全局加载方式实现
@@ -37,6 +41,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin/doc',
     name: 'AdminDoc',
+    meta:{loginRequire:true},
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_doc.vue')
   },
   {
@@ -47,6 +52,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin/user',
     name: 'user',
+    meta:{loginRequire:true},
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_user.vue')
   },
 
@@ -57,4 +63,25 @@ const router = createRouter({
   routes
 })
 
+// 路由登录拦截  在前端登录校验 如果不登陆不能通过地址栏输入路由访问
+router.beforeEach((to,from,next)=>{
+  //对meta.loginRequire进行检测
+  if(to.matched.some(function (item){
+    console.log("路由拦截，是否需登录校验",item,item.meta.loginRequire);
+    return item.meta.loginRequire;
+  })){
+    const loginUser=store.state.user;
+console.log("路由拦截，是否需登录校验",loginUser);
+    if (Tool.isEmpty(loginUser)) {
+
+      next('/');
+      console.log("未登录");
+    } else {
+      next();
+      console.log("已登录");
+    }
+  }
+else next();
+
+});
 export default router
