@@ -93,10 +93,22 @@ export default defineComponent({
       loginModalVisible.value = true;
     };
 
+    const checkPassword=(password :any)=>{
+      //密码长度不能小于8位且要包含英文和数字
+      const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      return reg.test(password);
+
+    }
+
     //登录
     const login = () => {
       console.log("login");
       loginModalLoading.value = true;
+      if(!checkPassword(loginUser.value.password)){
+        message.error("密码长度不能小于8位且要包含英文和数字");
+        loginModalLoading.value = false;
+        return false;
+      }
       loginUser.value.password = hexMd5(loginUser.value.password + KEY);
       axios.post('/user/login', loginUser.value).then((response) => {
         loginModalLoading.value = false;
