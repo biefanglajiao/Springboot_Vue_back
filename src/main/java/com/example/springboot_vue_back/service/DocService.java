@@ -2,6 +2,8 @@ package com.example.springboot_vue_back.service;
 
 import com.example.springboot_vue_back.Mapper.ContentMapper;
 import com.example.springboot_vue_back.Mapper.DocMapper;
+import com.example.springboot_vue_back.Mapper.DocMapperCust;
+import com.example.springboot_vue_back.Mapper.EbookMapperCust;
 import com.example.springboot_vue_back.Utils.CopyUtils;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Content;
@@ -23,7 +25,11 @@ import java.util.List;
 public class DocService {
     @Resource
     private DocMapper docMapper;
+    @Resource
+    private EbookMapperCust ebookMapperCust;
 
+    @Resource
+    private DocMapperCust docMapperCust;
     @Autowired
     private SnowFlake snowFlake;
     @Resource
@@ -43,6 +49,7 @@ public class DocService {
         docExample.createCriteria().andEbookIdEqualTo(ebookId);
         docExample.setOrderByClause("sort asc");//根据sort字段升序排列
         List<Doc> docList = docMapper.selectByExample(docExample);
+        ebookMapperCust.increaseViewCount(ebookId);//增加书的阅读量
         //将Doc类型转为DocResp类型 使用copyutils工具类
         List<DocQueryResp> docRespList = CopyUtils.copyList(docList, DocQueryResp.class);
 
@@ -118,7 +125,9 @@ public class DocService {
             //不存在 新增
 
             doc.setId(snowFlake.nextId());//将生成的雪花算法赋给id
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + doc.getId());
+           doc.setViewCount(0);
+           doc.setVoteCount(0);
+
             //文档 阅读 点赞数  初始默认0
             docMapper.insert(doc);
 
@@ -142,7 +151,8 @@ public class DocService {
     }
     public String findContent(Long id ){
         Content content = contentMapper.selectByPrimaryKey(id);
-        if (ObjectUtils.isEmpty(content))
+        docMapperCust.increaseViewCount(id) ;//文档阅读数+1
+                if (ObjectUtils.isEmpty(content))
             return "";
         return content.getContent();
     }
