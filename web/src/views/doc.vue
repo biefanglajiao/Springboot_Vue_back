@@ -19,6 +19,14 @@
 
         </a-col>
         <a-col :span="18">
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <soan>阅读数：{{doc.viewCount}}</soan>&nbsp;&nbsp;
+              <span>点赞数：{{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px;background-color: #42b983"/>
+          </div>
           <div v-html="html"
                class="wangEditor-container" ></div>
         </a-col>
@@ -29,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref, createVNode} from "vue";
+import {defineComponent, onMounted, ref, } from "vue";
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/utils/tool";
@@ -39,6 +47,9 @@ export default defineComponent({
   name: "doc.vue",
 
   setup() {
+    const doc = ref();
+    doc.value = {};//当前选中的文档信息（题目 阅读数  点赞数等）
+
     const route = useRoute();//路由  带有很多路由的信息
     const docs = ref();
     /***
@@ -96,6 +107,10 @@ export default defineComponent({
           if (Tool.isNotEmpty(docslevel)){
             defaultSelectedKeys.value = [docslevel.value[0].id];
             handleQueryContent(docslevel.value[0].id);
+            //初始显示文档信息
+            doc.value= docslevel.value[0];
+            // console.log("初始显示文档信息!!!!!!!!!!!!adadadada!!!!!!!!!",doc.value);
+            // console.log("初始显示文档信息!!!!!!!!!!!!adadadada11111!!!!!!!!!",docslevel.value[0]);
           }
         } else {
           message.error(data.message);
@@ -104,8 +119,17 @@ export default defineComponent({
     };
 
     const onSelect = (selectedKeys: any, info: any) => {
-      console.log('selected', selectedKeys, info);
-      handleQueryContent(selectedKeys[0]);
+      // console.log('selectedKeys', selectedKeys);
+      // console.log('selectedinfo',  info);
+
+      if (Tool.isNotEmpty(selectedKeys)) {
+        //加载内容
+        handleQueryContent(selectedKeys[0]);
+        //选中某一节点时，加载该节点的文档信息
+        doc.value=info.selectedNodes[0];
+        // console.log("选中的文档信息!!!!!!!!!!!!!!!!!!!!!",doc.value);
+      }
+
     };
 
 
@@ -118,6 +142,7 @@ export default defineComponent({
       html,
       onSelect,
       defaultSelectedKeys,
+      doc,
 
     }
   }
