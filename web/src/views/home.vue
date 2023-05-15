@@ -43,17 +43,30 @@
           <template #renderItem="{ item }">
             <a-list-item key="item.name">
               <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component :is="type" style="margin-right: 8px"/>
-            {{ text }}
+          <span>
+            <component :is="'LikeOutlined'" style="margin-right: 8px"/>
+            <!--            点赞数-->
+            {{ item.voteCount }}
           </span>
+                <span>
+<!--                阅读数-->
+            <component :is="'FireOutlined'" style="margin-right: 8px"/>
+            {{ item.viewCount }}
+          </span>
+                <span>
+<!--               文档数-->
+            <component :is="'FileTextOutlined'" style="margin-right: 8px"/>
+            {{ item.docCount }}
+          </span>
+
+
               </template>
               <template #extra>
 
               </template>
               <a-list-item-meta :description="item.description">
                 <template #title>
-                 <router-link :to="'/doc?ebookId='+item.id">
+                  <router-link :to="'/doc?ebookId='+item.id">
                     {{ item.name }}
                   </router-link>
                 </template>
@@ -74,7 +87,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
-import {UserOutlined, HomeOutlined, StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
+import {UserOutlined, HomeOutlined,FireOutlined,FileTextOutlined} from '@ant-design/icons-vue';
 import {Tool} from "@/utils/tool";
 import {message} from "ant-design-vue";
 //测试假数据
@@ -96,10 +109,9 @@ export default defineComponent({
 
   components: {
     HomeOutlined,
-    StarOutlined,
-    LikeOutlined,
-    MessageOutlined,
+    FireOutlined,
     UserOutlined,
+    FileTextOutlined,
   },
   setup() {
     console.log("setup")
@@ -161,11 +173,7 @@ export default defineComponent({
       }
     };
 
-    const actions: Record<string, string>[] = [
-      {type: 'StarOutlined', text: '156'},
-      {type: 'LikeOutlined', text: '156'},
-      {type: 'MessageOutlined', text: '2'},
-    ];
+
     const categoryslevel = ref();
     let categorys: any;
     /***
@@ -192,7 +200,7 @@ export default defineComponent({
     return {
       ebooks,
       // pagination,
-      actions,
+
 
       categoryslevel,
       isshowwelcome,  //互斥方法显示是否显示欢迎页面
