@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.PropertyPreFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.example.springboot_vue_back.Utils.RequestContext;
+import com.example.springboot_vue_back.Utils.SnowFlake;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -14,11 +15,13 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,12 +30,17 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class LogAspect {//aop 模式 接口耗时
 private static final Logger LOG = LoggerFactory.getLogger(LogAspect.class);
+@Resource
+private SnowFlake   snowFlake;
+
 //定义一个切点
    @Pointcut("execution(public * com.example.springboot_vue_back.Controller.*.*(..))")//切点表达式 所有的controller方法
     public void contorllerPointcut() {
     }
     @Before("contorllerPointcut()")//在切点之前执行
     public void doBefore(JoinPoint joinPoint) throws Throwable{
+        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));//使用雪花算法自定义日志的流水号 可以在配置文件（logback-spring.xml）中读取使用
+
        //开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
