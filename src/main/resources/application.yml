@@ -17,4 +17,10 @@ mybatis:
   #导入映射文件
   mapper-locations: classpath:/mapper/**/*.xml
 
+#rocketmq配置
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: default
+
 

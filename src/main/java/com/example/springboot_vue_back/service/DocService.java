@@ -19,6 +19,7 @@ import com.example.springboot_vue_back.resp.DocQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.websocket.WebSocketServer;
 import com.github.pagehelper.PageInfo;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,9 @@ public class DocService {
     private RedisUtil redisUtil;
     @Resource
   private websocketAsyncService websocketAsyncService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -191,7 +195,11 @@ public class DocService {
 
 //旧:      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
      //改进 异步化操作
-        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞",logId);
+//        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞",logId);
+
+        //改进2.0 通过mq来实现
+    rocketMQTemplate.convertAndSend("VOTE_TOPIC","【"+doc.getName()+"】被点赞");
+
     }
 
     /**
