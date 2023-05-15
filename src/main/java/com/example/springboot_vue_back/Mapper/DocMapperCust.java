@@ -8,4 +8,6 @@ import java.util.List;
 public interface DocMapperCust {
     public int increaseViewCount(long id);
     public  int increaseVoteCount(long id);
+
+    public  int updateEbookInfo();
 }

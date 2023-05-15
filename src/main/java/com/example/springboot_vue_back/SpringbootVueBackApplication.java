@@ -7,9 +7,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 //@ComponentScan({"com.example","com.xxx"})//包扫描接口，方便对保证扫描的管理
 @SpringBootApplication
 @MapperScan("com.example.springboot_vue_back.Mapper")
+@EnableScheduling //定时器
 public class SpringbootVueBackApplication {
 private static final Logger LOG = LoggerFactory.getLogger(SpringbootVueBackApplication.class);
     public static void main(String[] args){

@@ -176,4 +176,11 @@ public class DocService {
 
     }
 
+    /**
+     * 更新电子书信息(文档数，点赞总数 阅读总数)
+     */
+    public void updateEbookInfo() {
+        docMapperCust.updateEbookInfo();
+    }
+
 }
