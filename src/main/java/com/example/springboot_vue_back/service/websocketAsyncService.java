@@ -1,6 +1,7 @@
 package com.example.springboot_vue_back.service;
 
 import com.example.springboot_vue_back.websocket.WebSocketServer;
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,8 @@ public class websocketAsyncService {
     @Resource
     private WebSocketServer webSocketServer;
     @Async //异步化 用来处理websocket消息队列
-    public void sendInfo(String message){
+    public void sendInfo(String message ,String logid  ){
+        MDC.put("LOG_ID",logid);//将流水号放入日志
         webSocketServer.sendInfo(message);
     }
 

@@ -19,6 +19,7 @@ import com.example.springboot_vue_back.resp.DocQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.websocket.WebSocketServer;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -178,9 +179,12 @@ public class DocService {
         }
 //推送消息
         Doc doc = docMapper.selectByPrimaryKey(id);
+        //解决流水号丢失问题
+        String logId = MDC.get("LOG_ID");
+
 //旧:      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
      //改进 异步化操作
-        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞");
+        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞",logId);
     }
 
     /**
