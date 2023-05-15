@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <a-layout-content :style="{background:'#fff', padding:'24px',margin:0,}">
-      <h1 v-if="docslevel.length===0" >此电子书下还没有文档</h1>
+      <h1 v-if="docslevel.length===0">此电子书下还没有文档</h1>
 
       <a-row>
         <a-col :span="6">
@@ -13,31 +13,37 @@
               :defaultExpandAll="true"
               :defaultSelectedKeys="defaultSelectedKeys"
           >
-<!--            //Q: @select的含义是什么-->
-<!--            //A:select是一个事件，当树节点被选中时触发，返回值为选中节点的相关信息-->
+            <!--            //Q: @select的含义是什么-->
+            <!--            //A:select是一个事件，当树节点被选中时触发，返回值为选中节点的相关信息-->
           </a-tree>
 
         </a-col>
         <a-col :span="18">
           <div>
-            <h2>{{doc.name}}</h2>
+            <h2>{{ doc.name }}</h2>
             <div>
-              <soan>阅读数：{{doc.viewCount}}</soan>&nbsp;&nbsp;
-              <span>点赞数：{{doc.voteCount}}</span>
+              <soan>阅读数：{{ doc.viewCount }}</soan>&nbsp;&nbsp;
+              <span>点赞数：{{ doc.voteCount }}</span>
             </div>
             <a-divider style="height: 2px;background-color: #42b983"/>
           </div>
+
+          <a-back-top/>
+          <!--          回到顶部显示-->
+
           <div v-html="html"
-               class="wangEditor-container" ></div>
+               class="wangEditor-container"></div>
 
+          <div class="up">
 
-          <a-button type="primary" shape="round" :size="size" @click="IncreaseVoteView(doc.id)" >
-            <template #icon>
-              <like-two-tone two-tone-color="#eb2f96"/>
-              <DownloadOutlined />
-            </template>
-           点赞:{{doc.voteCount}}
-          </a-button>
+            <a-button type="primary" shape="round" :size="size" @click="IncreaseVoteView(doc.id)">
+              <template #icon>
+                <like-two-tone two-tone-color="#eb2f96"/>
+                <DownloadOutlined/>
+              </template>
+              点赞:{{ doc.voteCount }}
+            </a-button>
+          </div>
         </a-col>
 
       </a-row>
@@ -49,13 +55,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref, } from "vue";
+import {defineComponent, onMounted, ref,} from "vue";
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/utils/tool";
 import {useRoute} from "vue-router";
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import {LikeTwoTone } from '@ant-design/icons-vue';
+import type {SizeType} from 'ant-design-vue/es/config-provider';
+import {LikeTwoTone} from '@ant-design/icons-vue';
+
 export default defineComponent({
   components: {
     LikeTwoTone,
@@ -89,16 +96,16 @@ export default defineComponent({
     const defaultSelectedKeys = ref();//存放默认选中的节点（初始选中打开的文档）
     defaultSelectedKeys.value = [];
 
-    const  html=ref();
+    const html = ref();
     /***
      * @方法描述: 内容数据获取方法
      */
-    const handleQueryContent = (id:number) => {
+    const handleQueryContent = (id: number) => {
       axios.get("/doc/find-content/" + id,).then((response) => {
 
         const data = response.data;
         if (data.success) {
-          html.value=data.content;
+          html.value = data.content;
           console.log("内容数据", html.value);
         } else {
           message.error(data.message);
@@ -120,11 +127,11 @@ export default defineComponent({
           docs.value = Tool.array2Tree(docs.value, 0);
           docslevel.value = docs.value;
           console.log("处理后的数据", docslevel.value)
-          if (Tool.isNotEmpty(docslevel)){
+          if (Tool.isNotEmpty(docslevel)) {
             defaultSelectedKeys.value = [docslevel.value[0].id];
             handleQueryContent(docslevel.value[0].id);
             //初始显示文档信息
-            doc.value= docslevel.value[0];
+            doc.value = docslevel.value[0];
             // console.log("初始显示文档信息!!!!!!!!!!!!adadadada!!!!!!!!!",doc.value);
             // console.log("初始显示文档信息!!!!!!!!!!!!adadadada11111!!!!!!!!!",docslevel.value[0]);
           }
@@ -138,7 +145,7 @@ export default defineComponent({
      * @param selectedKeys
      * @param info
      */
-  const IncreaseVoteView=(id: number)=>{
+    const IncreaseVoteView = (id: number) => {
       axios.get("/doc/increaseVoteView/" + id).then((response) => {
 
         const data = response.data;
@@ -146,7 +153,7 @@ export default defineComponent({
           // message.success("点赞成功");
           doc.value.voteCount++;
         } else {
-          message.error("点赞失败,您已赞过，请在24小时以后重试",data.message);
+          message.error("点赞失败,您已赞过，请在24小时以后重试", data.message);
         }
       });
     }
@@ -158,7 +165,7 @@ export default defineComponent({
         //加载内容
         handleQueryContent(selectedKeys[0]);
         //选中某一节点时，加载该节点的文档信息
-        doc.value=info.selectedNodes[0];
+        doc.value = info.selectedNodes[0];
         // console.log("选中的文档信息!!!!!!!!!!!!!!!!!!!!!",doc.value);
       }
 
@@ -176,7 +183,7 @@ export default defineComponent({
       defaultSelectedKeys,
       doc,
 
-        //点赞相关 ：
+      //点赞相关 ：
       size: ref<SizeType>('large'),
       IncreaseVoteView,
     }
@@ -184,7 +191,7 @@ export default defineComponent({
 })
 </script>
 
-<style >
+<style>
 /* wangeditor默认样式, 参照: http://www.wangeditor.com/doc/pages/02-%E5%86%85%E5%AE%B9%E5%A4%84%E7%90%86/03-%E8%8E%B7%E5%8F%96html.html */
 /* table 样式 */
 
@@ -198,16 +205,18 @@ export default defineComponent({
   font-size: 100%;
   background-color: #f1f1f1;
 }
+
 /* wangeditor默认样式, 参照: http://www.wangeditor.com/doc/pages/02-%E5%86%85%E5%AE%B9%E5%A4%84%E7%90%86/03-%E8%8E%B7%E5%8F%96html.html */
 /* table 样式 */
 .wangEditor-container table {
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
 }
+
 .wangEditor-container pre {
 
   background: #2d2d2d;
-  color: rgb(201,209,217);
+  color: rgb(201, 209, 217);
   font-family: Consolas;
   text-align: left;
   padding: 1em;
@@ -221,12 +230,14 @@ export default defineComponent({
   word-wrap: normal;
   line-height: 1.5;
 }
+
 .wangEditor-container table td,
 .wangEditor-container table th {
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
   padding: 3px 5px;
 }
+
 .wangEditor-container table th {
   border-bottom: 2px solid #ccc;
   text-align: center;
@@ -242,6 +253,7 @@ export default defineComponent({
   padding: 3px 5px;
   margin: 0 3px;
 }
+
 .wangEditor-container pre code {
   display: block;
 }
@@ -250,6 +262,10 @@ export default defineComponent({
 .wangEditor-container ul, ol {
   margin: 10px 0 10px 20px;
 }
+/*//点赞按钮*/
+ .up{
 
+   text-align: center;
+ }
 
 </style>
