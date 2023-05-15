@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyPreFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
+import com.example.springboot_vue_back.Utils.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -43,6 +44,8 @@ private static final Logger LOG = LoggerFactory.getLogger(LogAspect.class);
         LOG.info("请求地址: {} {}", request.getRequestURL().toString(), request.getMethod());
         LOG.info("远程地址: {}", request.getRemoteAddr());
         LOG.info("请求方法: {}.{}", signature.getDeclaringTypeName(), name);
+
+        RequestContext.setRemoteAddr(getRemoteIp(request));//获取远程ip并放入线程变量中
 
 
         //打印请求参数

@@ -36,7 +36,7 @@ public class DocController {
     @GetMapping("/increaseVoteView/{id}")
     public ComminResp increaseVoteView( @PathVariable  Long id) {
         ComminResp objectComminResp = new ComminResp<>();
-        docService.increaseVoteView(id);
+    docService.increaseVoteView(id);
         return objectComminResp;
     }
 

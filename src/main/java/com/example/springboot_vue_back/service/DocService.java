@@ -5,10 +5,14 @@ import com.example.springboot_vue_back.Mapper.DocMapper;
 import com.example.springboot_vue_back.Mapper.DocMapperCust;
 import com.example.springboot_vue_back.Mapper.EbookMapperCust;
 import com.example.springboot_vue_back.Utils.CopyUtils;
+import com.example.springboot_vue_back.Utils.RedisUtil;
+import com.example.springboot_vue_back.Utils.RequestContext;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Content;
 import com.example.springboot_vue_back.domain.Doc;
 import com.example.springboot_vue_back.domain.DocExample;
+import com.example.springboot_vue_back.exception.BusinessException;
+import com.example.springboot_vue_back.exception.BusinessExceptionCode;
 import com.example.springboot_vue_back.req.DocQueryReq;
 import com.example.springboot_vue_back.req.DocSaveReq;
 import com.example.springboot_vue_back.resp.DocQueryResp;
@@ -34,6 +38,8 @@ public class DocService {
     private SnowFlake snowFlake;
     @Resource
     private ContentMapper contentMapper;
+    @Resource
+    private RedisUtil redisUtil;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -158,7 +164,16 @@ public class DocService {
     }
 
     public void increaseVoteView(Long id){
-        docMapperCust.increaseVoteCount(id);//文档点赞数+1
+// 旧：
+// docMapperCust.increaseVoteCount(id);//文档点赞数+1
+   //改进： 远程IP+doc.id作为key，24小时不能重复
+        String key= RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+key,60*60*24)){
+            docMapperCust.increaseVoteCount(id);//文档点赞数+1
+        }else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
+
     }
 
 }
