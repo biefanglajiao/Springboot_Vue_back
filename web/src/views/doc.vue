@@ -29,9 +29,21 @@
           </div>
           <div v-html="html"
                class="wangEditor-container" ></div>
+
+
+          <a-button type="primary" shape="round" :size="size" @click="IncreaseVoteView(doc.id)" >
+            <template #icon>
+              <like-two-tone two-tone-color="#eb2f96"/>
+              <DownloadOutlined />
+            </template>
+           点赞:{{doc.voteCount}}
+          </a-button>
         </a-col>
+
       </a-row>
+
     </a-layout-content>
+
 
   </a-layout>
 </template>
@@ -42,8 +54,12 @@ import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/utils/tool";
 import {useRoute} from "vue-router";
-
+import type { SizeType } from 'ant-design-vue/es/config-provider';
+import {LikeTwoTone } from '@ant-design/icons-vue';
 export default defineComponent({
+  components: {
+    LikeTwoTone,
+  },
   name: "doc.vue",
 
   setup() {
@@ -117,7 +133,23 @@ export default defineComponent({
         }
       });
     };
+    /***
+     * 点赞功能
+     * @param selectedKeys
+     * @param info
+     */
+  const IncreaseVoteView=(id: number)=>{
+      axios.get("/doc/increaseVoteView/" + id).then((response) => {
 
+        const data = response.data;
+        if (data.success) {
+          message.success("点赞成功");
+          doc.value.voteCount++;
+        } else {
+          message.error("点赞失败",data.message);
+        }
+      });
+    }
     const onSelect = (selectedKeys: any, info: any) => {
       // console.log('selectedKeys', selectedKeys);
       // console.log('selectedinfo',  info);
@@ -144,6 +176,9 @@ export default defineComponent({
       defaultSelectedKeys,
       doc,
 
+        //点赞相关 ：
+      size: ref<SizeType>('large'),
+      IncreaseVoteView,
     }
   }
 })

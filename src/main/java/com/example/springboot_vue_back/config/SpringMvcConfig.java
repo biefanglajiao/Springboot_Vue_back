@@ -26,6 +26,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/category/all","/category/list",
                         "/ebook/list",
                         "/doc/all/**",
+                        "/doc/allbyid/**",
+                        "/doc/increaseVoteView/**",
                         "/doc/find-content/**"
                 );//拦截所有请求，除了exculdePathPatterns中的请求
     }

@@ -157,4 +157,8 @@ public class DocService {
         return content.getContent();
     }
 
+    public void increaseVoteView(Long id){
+        docMapperCust.increaseVoteCount(id);//文档点赞数+1
+    }
+
 }

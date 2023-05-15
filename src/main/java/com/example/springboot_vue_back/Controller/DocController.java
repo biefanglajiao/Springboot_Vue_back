@@ -28,6 +28,18 @@ public class DocController {
         return objectComminResp;
     }
 
+    /**
+     * 点赞
+     * @param id
+     * @return
+     */
+    @GetMapping("/increaseVoteView/{id}")
+    public ComminResp increaseVoteView( @PathVariable  Long id) {
+        ComminResp objectComminResp = new ComminResp<>();
+        docService.increaseVoteView(id);
+        return objectComminResp;
+    }
+
         @GetMapping("/find-content/{id}")
     public ComminResp findContent( @PathVariable  Long id) {
         ComminResp<String> objectComminResp = new ComminResp<>();
