@@ -22,6 +22,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -127,7 +128,13 @@ public class DocService {
         return pageResp;
     }
 
-
+    /**
+     * @功能: 保存
+     * @注解功能: 开启事务 与异步化同理: 事务操作与异步相同 添加事务注解的方法需要在另外一个类被调用
+     * @事务的作用:   在这个方法中涉及到了对两个表的操作,添加事务可以让他俩要么都成功  要么都失败
+     * @param req
+     */
+    @Transactional
     public void save(DocSaveReq req) {
         Doc doc = CopyUtils.copy(req, Doc.class);//将请求参数更新为实体
         Content content = CopyUtils.copy(req, Content.class);
