@@ -42,7 +42,7 @@ public class DocService {
     @Resource
     private RedisUtil redisUtil;
     @Resource
-    private WebSocketServer webSocketServer;
+  private websocketAsyncService websocketAsyncService;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -178,7 +178,9 @@ public class DocService {
         }
 //推送消息
         Doc doc = docMapper.selectByPrimaryKey(id);
-      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
+//旧:      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
+     //改进 异步化操作
+        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞");
     }
 
     /**
