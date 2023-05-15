@@ -17,6 +17,7 @@ import com.example.springboot_vue_back.req.DocQueryReq;
 import com.example.springboot_vue_back.req.DocSaveReq;
 import com.example.springboot_vue_back.resp.DocQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
+import com.example.springboot_vue_back.websocket.WebSocketServer;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,8 @@ public class DocService {
     private ContentMapper contentMapper;
     @Resource
     private RedisUtil redisUtil;
+    @Resource
+    private WebSocketServer webSocketServer;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -173,7 +176,9 @@ public class DocService {
         }else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
-
+//推送消息
+        Doc doc = docMapper.selectByPrimaryKey(id);
+      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
     }
 
     /**

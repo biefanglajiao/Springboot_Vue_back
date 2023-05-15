@@ -143,7 +143,7 @@ export default defineComponent({
 
         const data = response.data;
         if (data.success) {
-          message.success("点赞成功");
+          // message.success("点赞成功");
           doc.value.voteCount++;
         } else {
           message.error("点赞失败,您已赞过，请在24小时以后重试",data.message);
