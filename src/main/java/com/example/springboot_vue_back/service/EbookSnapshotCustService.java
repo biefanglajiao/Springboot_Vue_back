@@ -1,0 +1,26 @@
+package com.example.springboot_vue_back.service;
+
+import com.example.springboot_vue_back.Mapper.EbookSnapshotMapperCust;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+
+/**
+ * @Author: 常兆海
+ * @Description:
+ * @DateTime: 2023/5/16 15:00
+ **/
+@Service
+public class EbookSnapshotCustService {
+    @Resource
+    private EbookSnapshotMapperCust ebookSnapshotMapperCust;
+
+    @Transactional
+    public void doEbookSnapshotMapperCust(){
+        ebookSnapshotMapperCust.getNowInfo();
+        ebookSnapshotMapperCust.upNowInfo();
+        ebookSnapshotMapperCust.upSubInfo();
+
+    }
+}

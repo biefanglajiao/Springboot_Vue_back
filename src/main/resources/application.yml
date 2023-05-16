@@ -8,6 +8,7 @@ spring:
     username: biefanglajiao
     password: 020116zh
     driver-class-name: com.mysql.cj.jdbc.Driver
+    #如果需要在一个xml文件中执行多个sql语句 需要在url后面添加：&allowMultiQueries=true
     #redis配置
     redis:
       host=127.0.0.1
