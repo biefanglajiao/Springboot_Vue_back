@@ -24,7 +24,7 @@
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/Springboot_Vue?serverTimezone=UTC&amp;characterEncoding=utf8&amp;useUnicode=true&amp;useSSL=false"
                         userId="biefanglajiao"
-                        password="123456">
+                        password="020116zh">
         </jdbcConnection>
 
         <!-- domain类的位置 -->
@@ -45,7 +45,8 @@
 <!--        <table tableName="category"/>-->
 <!--        <table tableName="doc"/>-->
 <!--        <table tableName="content"/>-->
-        <table tableName="user"/>
+<!--        <table tableName="user"/> -->
+        <table tableName="ebook_snapshot"/>
 
     </context>
 </generatorConfiguration>
