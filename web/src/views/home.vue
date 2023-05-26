@@ -27,7 +27,7 @@
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
         <div class="welcome" v-show="isshowwelcome">
-          欢迎使用
+         <TheWelcome></TheWelcome>
         </div>
         <a-list item-layout="vertical" size="middle" :data-source="ebooks"
                 :grid="{ gutter:20 , column : 3}"
@@ -78,7 +78,7 @@
             </a-list-item>
           </template>
         </a-list>
-        Content
+
       </a-layout-content>
     </a-layout>
   </a-layout-content>
@@ -90,6 +90,7 @@ import axios from "axios";
 import {UserOutlined, HomeOutlined,FireOutlined,FileTextOutlined} from '@ant-design/icons-vue';
 import {Tool} from "@/utils/tool";
 import {message} from "ant-design-vue";
+import TheWelcome from "@/components/the-welcome.vue";
 //测试假数据
 // const listData: Record<string, string>[] = [];
 //
@@ -112,6 +113,7 @@ export default defineComponent({
     FireOutlined,
     UserOutlined,
     FileTextOutlined,
+    TheWelcome,
   },
   setup() {
     console.log("setup")
