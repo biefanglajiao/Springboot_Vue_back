@@ -64,6 +64,9 @@ public interface EbookSnapshotMapperCust {
      */
 
 
-
+//获取昨日今日快照表数据
     public List<StatisticResp> getstatistic();
+
+    //获取30天快照表数据
+    public List<StatisticResp> get30statistic();
 }
