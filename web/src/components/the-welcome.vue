@@ -82,6 +82,12 @@
                 </a-card>
             </a-col>
         </a-row>
+        <br>
+        <a-row>
+            <a-col :span="24">
+                <div id="main" style="width: 100%;height:300px;"></div>
+            </a-col>
+        </a-row>
     </div>
 </template>
 <script lang="ts">
@@ -89,6 +95,7 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {UserOutlined, ArrowUpOutlined, ArrowDownOutlined, LikeOutlined} from '@ant-design/icons-vue';
 
+declare  let echarts: any;
 export default defineComponent({
     name: 'the-welcome',
     components: {
@@ -129,13 +136,40 @@ export default defineComponent({
 
             });
         };
+        const testEcharts = () => {
+
+
+           const chartDom = document.getElementById('main');
+            const  myChart = echarts.init(chartDom);
+
+
+         const   option = {
+                xAxis: {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [150, 230, 224, 218, 135, 147, 260],
+                        type: 'line'
+                    }
+                ]
+            };
+
+           myChart.setOption(option);
+        };
         onMounted(() => {
             getStatistic();
+            testEcharts();
         });
 
 
         return {
             statistic,
+            testEcharts,
 
         }
 
