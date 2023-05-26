@@ -116,7 +116,7 @@ export default defineComponent({
                 const data = response.data;
                 if (data.success) {
                     loginModalVisible.value = false;
-console.log(data.content);
+
                     message.success("登录成功");
                     store.commit('setUser', data.content);//将用户信息存入store
                 } else {
