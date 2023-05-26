@@ -11,8 +11,28 @@ public class UserLoginResp  {
 
         private Long id;
         private String loginName;
+        private String name;
 
-        private String password;
+    @Override
+    public String toString() {
+        return "UserLoginResp{" +
+                "id=" + id +
+                ", loginName='" + loginName + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
+                '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String password;
         private  String token;
 
         public Long getId() {
@@ -40,16 +60,6 @@ public class UserLoginResp  {
         public void setPassword(String password) {
             this.password = password;
         }
-
-    @Override
-    public String toString() {
-        return "UserLoginResp{" +
-                "id=" + id +
-                ", loginName='" + loginName + '\'' +
-                ", password='" + password + '\'' +
-                ", token='" + token + '\'' +
-                '}';
-    }
 
     public String getToken() {
         return token;
