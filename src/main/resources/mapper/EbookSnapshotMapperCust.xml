@@ -26,5 +26,18 @@
                 t1.vote_increase = t1.vote_count - ifnull(t2.vote_count,0)
         where  t1.date = curdate();
     </update>
+    <!--  获取首页的数据：总阅读数，总点赞数，今日的阅读数，点赞数：返回如果两条，是两天的  一条说明是新数据-->
+    <select id="getstatistic" resultType="com.example.springboot_vue_back.resp.StatisticResp">
+        select
+            t1.`date`as `date`,
+            sum(t1.view_count) as viewCount,
+            sum(t1.vote_count) as voteCount,
+            sum(t1.view_increase) as viewIncrease,
+            sum(t1.vote_increase) as voteIncrease
+        from ebook_snapshot t1
+        where t1.`date`>=date_sub(curdate(), interval 1 day)
+        group by t1.`date`
+        order by t1.`date` asc;
+    </select>
 
 </mapper>

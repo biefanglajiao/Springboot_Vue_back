@@ -1,5 +1,9 @@
 package com.example.springboot_vue_back.Mapper;
 
+import com.example.springboot_vue_back.resp.StatisticResp;
+
+import java.util.List;
+
 /**
  * @Author: 常兆海
  * @Description:
@@ -58,4 +62,8 @@ public interface EbookSnapshotMapperCust {
 
 
      */
+
+
+
+    public List<StatisticResp> getstatistic();
 }
