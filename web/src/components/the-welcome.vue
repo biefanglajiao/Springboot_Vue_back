@@ -40,14 +40,14 @@
                 <a-card>
                     <a-row>
                         <a-col :span="12">
-                            <a-statistic title="今日阅读量" :value="statistic.todayViewCount">
+                            <a-statistic title="昨日阅读量" :value="statistic.todayViewCount">
                                 <template #suffix>
                                     <UserOutlined/>
                                 </template>
                             </a-statistic>
                         </a-col>
                         <a-col :span="12">
-                            <a-statistic title="今日点赞量" :value="statistic.todayVoteCount">
+                            <a-statistic title="昨日点赞量" :value="statistic.todayVoteCount">
                                 <template #suffix>
                                     <like-outlined/>
                                 </template>
