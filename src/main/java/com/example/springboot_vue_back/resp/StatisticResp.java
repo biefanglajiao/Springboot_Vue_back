@@ -1,5 +1,7 @@
 package com.example.springboot_vue_back.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 /**
@@ -8,6 +10,7 @@ import java.util.Date;
  * @DateTime: 2023/5/26 10:09
  **/
 public class StatisticResp {
+    @JsonFormat(pattern = "MM-dd",timezone = "GMT+8")//返回给前端的格式 日期格式化
     private Date date;
     private int viewCount;
     private int voteCount;

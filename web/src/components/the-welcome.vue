@@ -136,40 +136,109 @@ export default defineComponent({
 
             });
         };
-        const testEcharts = () => {
-
-
-           const chartDom = document.getElementById('main');
-            const  myChart = echarts.init(chartDom);
-
-
-         const   option = {
+        // const testEcharts = () => {
+        //
+        //
+        //    const chartDom = document.getElementById('main');
+        //     const  myChart = echarts.init(chartDom);
+        //
+        //
+        //  const   option = {
+        //         xAxis: {
+        //             type: 'category',
+        //             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        //         },
+        //         yAxis: {
+        //             type: 'value'
+        //         },
+        //         series: [
+        //             {
+        //                 data: [150, 230, 224, 218, 135, 147, 260],
+        //                 type: 'line'
+        //             }
+        //         ]
+        //     };
+        //
+        //    myChart.setOption(option);
+        // };
+        const init30DayEchaerts=(list:any)=>{
+            const mychart = echarts.init(document.getElementById('main'));
+            const xAxis=[];//横坐标
+            const seriesView=[];//纵坐标
+            const seriesVote=[];//纵坐标
+            for (let i=0;i<list.length;i++){
+                const record=list[i];
+                xAxis.push(record.date);
+                seriesView.push(record.viewCount);
+                seriesVote.push(record.voteCount);
+            }
+            const option={
+                title:{
+                    text:'最近30天阅读量和点赞量'
+                },
+                tooltip:{
+                    trigger:'axis'
+                },
+                legend: {
+                    data: ['点赞量', '阅读量', ]
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
                 xAxis: {
                     type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    boundaryGap: false,
+                    data: xAxis,
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
                     {
-                        data: [150, 230, 224, 218, 135, 147, 260],
-                        type: 'line'
-                    }
-                ]
+                        name: '阅读量',
+                        type: 'line',
+                        stack: 'Total',
+                        smooth: true,
+                        data: seriesView,
+                    },
+                    {
+                        name: '点赞量',
+                        type: 'line',
+                        stack: 'Total',
+                        smooth: true,
+                        data: seriesVote
+                    },]
             };
+            mychart.setOption(option);
+        };
 
-           myChart.setOption(option);
+        const get30DayStatistic=()=>{
+            axios.get("/ebook-Snapshot/get-30statistic").then((res)=>{
+                const data=res.data;
+                if (data.success){
+                    const list=data.content;
+                    init30DayEchaerts(list);
+                }
+            });
         };
         onMounted(() => {
             getStatistic();
-            testEcharts();
+            // testEcharts();
+            get30DayStatistic();
         });
 
 
         return {
             statistic,
-            testEcharts,
+
 
         }
 
