@@ -1,28 +1,147 @@
 <!--将header写成自定义组件-->
 <template>
-  <h1>aaaaaaaaaaaaaaaaaaa</h1>
+
+    <div>
+        <a-row>
+            <a-col :span="24">
+                <a-card>
+                    <a-row>
+                        <a-col :span="8">
+                            <a-statistic title="总阅读量" :value="statistic.viewCount">
+                                <template #suffix>
+                                    <UserOutlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                        <a-col :span="8">
+                            <a-statistic title="总点赞量" :value="statistic.voteCount">
+                                <template #suffix>
+                                    <Like-outlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                        <a-col :span="8">
+                            <a-statistic title="点赞率" :value="statistic.voteCount/statistic.viewCount*100"
+                                         :precision="2"
+                                         suffix="%"
+                                         :value-style="{color: '#cf1322'}">
+                                <template #suffix>
+                                    <Like-outlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                    </a-row>
+                </a-card>
+            </a-col>
+        </a-row>
+        <br>
+        <a-row :gutter="16">
+            <a-col :span="12">
+                <a-card>
+                    <a-row>
+                        <a-col :span="12">
+                            <a-statistic title="今日阅读量" :value="statistic.todayViewCount">
+                                <template #suffix>
+                                    <UserOutlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                        <a-col :span="12">
+                            <a-statistic title="今日点赞量" :value="statistic.todayVoteCount">
+                                <template #suffix>
+                                    <like-outlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                    </a-row>
+                </a-card>
+            </a-col>
+            <a-col :span="12">
+                <a-card>
+                    <a-row>
+                        <a-col :span="12">
+                            <a-statistic title="预计今日阅读量" :value="statistic.todayViewIncrease">
+                                <template #suffix>
+                                    <UserOutlined/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                        <a-col :span="12">
+                            <a-statistic title="预计今日阅读增长" :value="statistic.todayViewIncreaseRateAbs"
+                                         :precision="2"
+                                         suffix="%"
+                                         :value-style="statistic.todayViewIncreaseRate <0 ?{color: '#3f8600'} : {color: '#cf1322'}"
+                            >
+                                <template #prefix>
+                                    <arrow-down-outlined v-if="statistic.todayViewIncreaseRate<0"/>
+                                    <arrow-up-outlined v-else/>
+                                </template>
+                            </a-statistic>
+                        </a-col>
+                    </a-row>
+                </a-card>
+            </a-col>
+        </a-row>
+    </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import {defineComponent, onMounted, ref} from 'vue';
+import axios from "axios";
+import {UserOutlined, ArrowUpOutlined, ArrowDownOutlined, LikeOutlined} from '@ant-design/icons-vue';
 
 export default defineComponent({
-  name: 'the-welcome',
+    name: 'the-welcome',
+    components: {
+        UserOutlined,
+        LikeOutlined,
+        ArrowDownOutlined,
+        ArrowUpOutlined
+    },
 
-  setup() {
+    setup() {
+        const statistic = ref();
+        statistic.value = {};
+        const getStatistic = () => {
+            axios.get("/ebook-Snapshot/get-statistic").then((res) => {
+                const data = res.data;
+                if (data.success) {
+                    const ststisticResp = data.content;
+                    if (ststisticResp.length < 2) {
+                        //对昨天没有数据的情况做处理
+                        statistic.value.viewCount = ststisticResp[0].viewCount;
+                        statistic.value.voteCount = ststisticResp[0].voteCount;
+                        statistic.value.todayViewCount = statistic.value.viewCount;
+                        statistic.value.todayVoteCount = statistic.value.voteCount;
+                    } else {
+                        statistic.value.viewCount = ststisticResp[1].viewCount;
+                        statistic.value.voteCount = ststisticResp[1].voteCount;
+                        statistic.value.todayViewCount = ststisticResp[0].viewIncrease;
+                        statistic.value.todayVoteCount = ststisticResp[0].voteIncrease;
+                    }
+
+                    //按分钟计算当前时间点站一天的百分比
+                    const now = new Date();
+                    const nowRate = (now.getHours() * 60 + now.getMinutes()) / (24 * 60);
+                    statistic.value.todayViewIncrease = parseInt(String(ststisticResp[1].viewIncrease / nowRate));
+                    statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - ststisticResp[0].viewIncrease) / ststisticResp[0].viewIncrease * 100;
+                    statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+                }
+
+            });
+        };
+        onMounted(() => {
+            getStatistic();
+        });
 
 
+        return {
+            statistic,
+
+        }
 
 
-
-    return {
-
-      }
-
-
-  }
+    }
 });
-
 
 
 </script>
