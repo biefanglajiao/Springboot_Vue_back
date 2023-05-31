@@ -169,8 +169,8 @@ export default defineComponent({
             for (let i=0;i<list.length;i++){
                 const record=list[i];
                 xAxis.push(record.date);
-                seriesView.push(record.viewCount);
-                seriesVote.push(record.voteCount);
+                seriesView.push(record.viewIncrease);
+                seriesVote.push(record.voteIncrease);
             }
             const option={
                 title:{
