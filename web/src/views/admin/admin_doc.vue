@@ -122,6 +122,16 @@
               <p>
                 <a-form layout="inlline" :model="param">
                   <a-form-item>
+                    <h3>是否开启可参与:        <a-switch v-model:checked="checked" />
+
+                    </h3>
+
+                  </a-form-item>
+                </a-form>
+              </p>
+              <p>
+                <a-form layout="inlline" :model="param">
+                  <a-form-item>
                     <a-button type="primary" @click="handleSave">保存</a-button>
                   </a-form-item>
                 </a-form>
@@ -160,6 +170,10 @@ export default defineComponent({
     Toolbar
   },
   setup() {
+    /**
+     * 可参与模块数据
+     */
+    const checked = ref<boolean>(false);
     /****
      * @富文本编辑相关 start
      */
@@ -263,6 +277,7 @@ export default defineComponent({
       const editor = editorRef.value;
       doc.value.content = editor.getHtml();
       doc.value.ebookId = route.query.ebookId;
+      doc.value.involved= checked.value;
       console.log("doc.value", doc.value);
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
@@ -522,7 +537,6 @@ if (docslevel.value.length > 0) {
       });
     };
 
-
     /**
      * @方法描述: 初始进入页面就查一次数据
      */
@@ -567,7 +581,8 @@ if (docslevel.value.length > 0) {
       previewHtml,
       handlePreviewContent,
       onDrawerClose,
-
+    //可参与模块数据
+      checked
     }
   }
 });
