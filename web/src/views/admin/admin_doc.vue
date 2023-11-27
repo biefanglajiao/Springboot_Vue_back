@@ -348,6 +348,7 @@ export default defineComponent({
      */
     const add = () => {
       const editor = editorRef.value;
+      checked.value=false;
       editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       doc.value = {
