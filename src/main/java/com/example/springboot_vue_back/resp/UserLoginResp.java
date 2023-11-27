@@ -1,5 +1,7 @@
 package com.example.springboot_vue_back.resp;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -8,7 +10,7 @@ import java.io.Serializable;
 public class UserLoginResp  {
 
 
-
+    @JsonSerialize(using = ToStringSerializer.class)
         private Long id;
         private String loginName;
         private String name;

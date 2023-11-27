@@ -35,7 +35,7 @@
                class="wangEditor-container"></div>
 
           <div class="up">
-
+            <a-divider style="height: 2px;background-color: #42b983"/>
             <a-button type="primary" shape="round" :size="size" @click="IncreaseVoteView(doc.id)">
               <template #icon>
                 <like-two-tone two-tone-color="#eb2f96"/>
@@ -43,49 +43,53 @@
               </template>
               点赞:{{ doc.voteCount }}
             </a-button>
-            <a-form-item  v-show="ifshow">
-              <p>
-                <a-button type="primary" @click="add()">
-                  参与
-                </a-button>
-              </p>
+            <p/>
 
-            </a-form-item>
 
           </div>
-        </a-col>
+          <a-form-item v-show="ifshow">
+            <h1>
+              <a-button type="primary" @click="add()">
+                参与{{ modalVisible }}
+              </a-button>
+            </h1>
 
+          </a-form-item>
+        </a-col>
       </a-row>
 
     </a-layout-content>
 
-
   </a-layout>
-  <!--  关于反馈部分表单-->
+
   <a-modal title="参与表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
-    <a-form :model="needhelp" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
-      <a-form-item label="姓名">
-        <a-input v-model:value="needhelp.name"/>
-      </a-form-item>
-      <a-form-item label="地址">
-        <a-input v-model:value="needhelp.location"/>
-      </a-form-item>
-      <a-form-item label="邮箱">
-        <a-input v-model:value="needhelp.email"/>
-      </a-form-item>
-      <a-button type="primary" @click="getcheck(needhelp.email)">
-        获取验证码
-      </a-button>
-      <a-form-item label="TextArea">
-        <a-textarea v-model:value="needhelp.context" :rows="4"/>
-      </a-form-item>
-      <a-form-item label="描述">
-        <a-input type="text"/>
-      </a-form-item>
+              <a-form :model="needhelp" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
+                <a-form-item label="姓名">
+                  <a-input v-model:value="needhelp.name"/>
+                </a-form-item>
+                <a-form-item label="地址">
+                  <a-input v-model:value="needhelp.location"/>
+                </a-form-item>
+                <a-form-item label="邮箱">
+                  <a-input v-model:value="needhelp.email"/>
+                </a-form-item>
+                <a-form-item label="验证码">
+                  <a-input v-model:value="needhelp.email"/>
+                  <a-button type="primary" @click="getcheck(needhelp.email)">
+                  获取验证码
+                </a-button>
+                </a-form-item>
 
+                <a-form-item label="TextArea">
+                  <a-textarea v-model:value="needhelp.context" :rows="4"/>
+                </a-form-item>
+                <a-form-item label="描述">
+                  <a-input type="text"/>
+                </a-form-item>
+              </a-form>
+            </a-modal>
+  <!--  关于反馈部分表单-->
 
-    </a-form>
-  </a-modal>
 </template>
 
 <script lang="ts">
@@ -107,7 +111,8 @@ export default defineComponent({
     //关于反馈相关
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
-    const needhelp = ref();
+    const needhelp = ref({});
+
     //保存帮助信息
     const handleModalOk = () => {//保存
       modalLoading.value = true;
@@ -122,10 +127,15 @@ export default defineComponent({
         } else {
           message.error(data.message);
         }
-
       });
 
     };
+    /***
+     *     单击添加按钮
+     */
+    const add = () => {
+      modalVisible.value = true;
+    }
     //获取验证码
     const getcheck = (email: string) => {
       axios.get("/needhelp/getcheck/" + email).then((response) => {
@@ -254,7 +264,6 @@ export default defineComponent({
     onMounted(() => {
       handleQuery();
     });
-
     return {
       docslevel,
       html,
@@ -273,6 +282,8 @@ export default defineComponent({
       handleModalOk,
       getcheck,
       ifshow,
+      add,
+
 
     }
   }
