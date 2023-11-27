@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 /**
  * @Author: 常兆海
- * @Description:
+ * @Description:  消费端
  * @DateTime: 2023/5/15 22:17
  * @consumerGroup="default": 对应配置文件的group
  * @topic="VOTE_TOPIC" 对应docservice中的topic

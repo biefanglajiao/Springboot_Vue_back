@@ -171,6 +171,8 @@ export default defineComponent({
                 xAxis.push(record.date);
                 seriesView.push(record.viewIncrease);
                 seriesVote.push(record.voteIncrease);
+                console.log("seriesVote)",seriesVote)
+              console.log("seriesView)",seriesView)
             }
             const option={
                 title:{

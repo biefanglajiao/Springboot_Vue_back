@@ -21,7 +21,7 @@ public class DocController {
     private DocService docService;
 
     @GetMapping("/list")//模糊查询书籍
-    public ComminResp list( DocQueryReq req) {
+    public ComminResp list(DocQueryReq req) {
         ComminResp<PageResp<DocQueryResp>> objectComminResp = new ComminResp<>();
         PageResp<DocQueryResp> list = docService.list(req);
         objectComminResp.setContent(list);
@@ -30,20 +30,21 @@ public class DocController {
 
     /**
      * 点赞
+     *
      * @param id
      * @return
      */
     @GetMapping("/increaseVoteView/{id}")
-    public ComminResp increaseVoteView( @PathVariable  Long id) {
+    public ComminResp increaseVoteView(@PathVariable Long id) {
         ComminResp objectComminResp = new ComminResp<>();
-    docService.increaseVoteView(id);
+        docService.increaseVoteView(id);
         return objectComminResp;
     }
 
-        @GetMapping("/find-content/{id}")
-    public ComminResp findContent( @PathVariable  Long id) {
+    @GetMapping("/find-content/{id}")
+    public ComminResp findContent(@PathVariable Long id) {
         ComminResp<String> objectComminResp = new ComminResp<>();
-      String content = docService.findContent(id);
+        String content = docService.findContent(id);
         objectComminResp.setContent(content);
         return objectComminResp;
     }
@@ -51,10 +52,11 @@ public class DocController {
     @GetMapping("/all")//模糊查询书籍
     public ComminResp all() {
         ComminResp<List<DocQueryResp>> objectComminResp = new ComminResp<>();
-       List<DocQueryResp> list = docService.all();
+        List<DocQueryResp> list = docService.all();
         objectComminResp.setContent(list);
         return objectComminResp;
     }
+
     @GetMapping("/allbyid/{ebookId}")// 根据id查询书籍  =》找到对应的文档树
     public ComminResp allbyid(@PathVariable Long ebookId) {
         ComminResp<List<DocQueryResp>> objectComminResp = new ComminResp<>();

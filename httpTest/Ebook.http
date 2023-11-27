@@ -13,4 +13,6 @@ Content-Type: application/json
 
 GET http://localhost:8080/ebook-Snapshot/get-30statistic
 ###
+GET http://120.78.134.171:8080/ebook-Snapshot/get-30statistic
+###
 GET http://120.78.134.171:8088//ebook/list?page=1&size=100

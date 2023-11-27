@@ -149,6 +149,7 @@ export default defineComponent({
         const data = response.data;
         ebooks.value = data.content.list;
         // console.log(response)
+        console.log("ebooksssssssssssssssssssssss", ebooks.value)
       });
     }
 
