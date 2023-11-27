@@ -71,7 +71,7 @@ public class UserController {
         return objectComminResp;
     }
 
-    @PostMapping("/login")//保存书籍  一般保存类用post
+    @PostMapping("/login")//登录校验
     public ComminResp login(@RequestBody @Valid UserLoginReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));//密码加密 将前端的明文密码转为32位MD5
 
