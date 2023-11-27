@@ -11,27 +11,8 @@ public class DocSaveReq {
 @NotNull(message = "name不能为空")
     private String name;
 
-    @Override
-    public String toString() {
-        return "DocSaveReq{" +
-                "id=" + id +
-                ", ebookId=" + ebookId +
-                ", parent=" + parent +
-                ", name='" + name + '\'' +
-                ", content='" + content + '\'' +
-                ", sort=" + sort +
-                ", viewCount=" + viewCount +
-                ", voteCount=" + voteCount +
-                '}';
-    }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
+   private boolean involved;
 
     @NotNull(message = "[内容]不能为空")
     private String content;
@@ -98,4 +79,34 @@ public class DocSaveReq {
         this.voteCount = voteCount;
     }
 
+    @Override
+    public String toString() {
+        return "DocSaveReq{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", involved=" + involved +
+                ", content='" + content + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                '}';
+    }
+
+    public boolean isInvolved() {
+        return involved;
+    }
+
+    public void setInvolved(boolean involved) {
+        this.involved = involved;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

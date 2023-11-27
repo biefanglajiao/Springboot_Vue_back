@@ -9,4 +9,5 @@ public interface EbookInvolvedMapper {
     int exitInvolved(Long id);
     boolean updateInvolved(Long id, boolean involved);
     boolean insertInvolved(Long id, boolean involved);
+    boolean deleteInvolved(Long id);
 }

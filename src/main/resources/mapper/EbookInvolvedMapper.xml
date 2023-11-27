@@ -15,5 +15,9 @@
         set involved = #{involved}
         where id = #{id}
     </update>
+    <delete id="deleteInvolved">
+        delete from ebook_involved
+        where id = #{id}
+    </delete>
 
 </mapper>

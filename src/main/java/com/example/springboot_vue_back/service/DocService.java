@@ -11,6 +11,7 @@ import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Content;
 import com.example.springboot_vue_back.domain.Doc;
 import com.example.springboot_vue_back.domain.DocExample;
+import com.example.springboot_vue_back.domain.EbookInvolved;
 import com.example.springboot_vue_back.exception.BusinessException;
 import com.example.springboot_vue_back.exception.BusinessExceptionCode;
 import com.example.springboot_vue_back.req.DocQueryReq;
@@ -47,10 +48,11 @@ public class DocService {
     @Resource
     private RedisUtil redisUtil;
     @Resource
-  private websocketAsyncService websocketAsyncService;
+    private websocketAsyncService websocketAsyncService;
 
     @Resource
     private RocketMQTemplate rocketMQTemplate;
+
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -61,6 +63,7 @@ public class DocService {
 
         return docRespList;
     }
+
     public List<DocQueryResp> allbyid(Long ebookId) {
         DocExample docExample = new DocExample();
         docExample.createCriteria().andEbookIdEqualTo(ebookId);
@@ -73,7 +76,7 @@ public class DocService {
         return docRespList;
     }
 
-//    public PageResp<DocQueryResp> list(DocQueryReq req) {
+    //    public PageResp<DocQueryResp> list(DocQueryReq req) {
 ////        分页查询=》查询总数+查当前页数据
 //        PageHelper.startPage(req.getPage(), req.getSize());//第一个参数是页码，第二个参数是每页显示的条数 只对第一个查询语句起作用
 //
@@ -107,7 +110,7 @@ public class DocService {
 //        return pageResp;
 //    }
     public PageResp<DocQueryResp> list(DocQueryReq req) {
-       DocExample docExample=new DocExample();
+        DocExample docExample = new DocExample();
         docExample.setOrderByClause("sort asc");//根据sort字段升序排列
         DocExample.Criteria criteria = docExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -135,22 +138,23 @@ public class DocService {
     }
 
     /**
+     * @param req
      * @功能: 保存
      * @注解功能: 开启事务 与异步化同理: 事务操作与异步相同 添加事务注解的方法需要在另外一个类被调用
-     * @事务的作用:   在这个方法中涉及到了对两个表的操作,添加事务可以让他俩要么都成功  要么都失败
-     * @param req
+     * @事务的作用: 在这个方法中涉及到了对两个表的操作, 添加事务可以让他俩要么都成功  要么都失败
      */
     @Transactional
     public void save(DocSaveReq req) {
         Doc doc = CopyUtils.copy(req, Doc.class);//将请求参数更新为实体
         Content content = CopyUtils.copy(req, Content.class);
+        EbookInvolved ebookInvolved = CopyUtils.copy(req, EbookInvolved.class);
         if (ObjectUtils.isEmpty(req.getId())) {//判断是否存在
             //不存在 新增
 
             doc.setId(snowFlake.nextId());//将生成的雪花算法赋给id
-            ebookInvolvedService.isInvolved(req,doc.getId());//判断是否可参与
-           doc.setViewCount(0);
-           doc.setVoteCount(0);
+            ebookInvolvedService.insertInvolved(ebookInvolved.isInvolved(), doc.getId());//判断是否可参与
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
 
             //文档 阅读 点赞数  初始默认0
             docMapper.insert(doc);
@@ -160,8 +164,12 @@ public class DocService {
         } else {
             //更新
             docMapper.updateByPrimaryKey(doc);
-            int count=contentMapper.updateByPrimaryKeyWithBLOBs(content);
-            if (count==0)contentMapper.insert(content);
+
+            System.out.println("doc.getId():" + doc.getId());
+            System.out.println("ebookInvolved.isInvolved():" + ebookInvolved.isInvolved());
+            ebookInvolvedService.updateInvolved(ebookInvolved.isInvolved(), req.getId());//判断是否可参与  更新部分
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count == 0) contentMapper.insert(content);
         }
 
     }
@@ -171,24 +179,32 @@ public class DocService {
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
+        //将ids转为long型
+        ids.forEach(
+                id -> {
+                    ebookInvolvedService.deleteInvolved(Long.parseLong(id));//删除对应的可参与权限
+                }
+        );
+        //  ebookInvolvedService.deleteInvolved(Long.parseLong(ids.get(0)));//删除对应的可参与权限
 
     }
-    public String findContent(Long id ){
+
+    public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
-        docMapperCust.increaseViewCount(id) ;//文档阅读数+1
-                if (ObjectUtils.isEmpty(content))
+        docMapperCust.increaseViewCount(id);//文档阅读数+1
+        if (ObjectUtils.isEmpty(content))
             return "";
         return content.getContent();
     }
 
-    public void increaseVoteView(Long id){
+    public void increaseVoteView(Long id) {
 // 旧：
 // docMapperCust.increaseVoteCount(id);//文档点赞数+1
-   //改进： 远程IP+doc.id作为key，24小时不能重复
-        String key= RequestContext.getRemoteAddr();
-        if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+key,60*60*24)){
+        //改进： 远程IP+doc.id作为key，24小时不能重复
+        String key = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE" + id + "_" + key, 60 * 60 * 24)) {
             docMapperCust.increaseVoteCount(id);//文档点赞数+1
-        }else {
+        } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
 //推送消息
@@ -197,11 +213,11 @@ public class DocService {
         String logId = MDC.get("LOG_ID");
 
 //旧:      webSocketServer.sendInfo("【"+doc.getName()+"】被点赞");
-     //改进 异步化操作
+        //改进 异步化操作
 //        websocketAsyncService.sendInfo("【"+doc.getName()+"】被点赞",logId);
 
         //改进2.0 通过mq来实现
-    rocketMQTemplate.convertAndSend("VOTE_TOPIC","【"+doc.getName()+"】被点赞");
+        rocketMQTemplate.convertAndSend("VOTE_TOPIC", "【" + doc.getName() + "】被点赞");
 
     }
 

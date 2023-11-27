@@ -21,19 +21,23 @@ public class EbookInvolvedService {
     private EbookInvolvedMapper ebookInvolvedMapper;
 
 
-    //更新是否可参与权限
-    public boolean isInvolved(DocSaveReq req, long id) {
-        EbookInvolved ebookInvolved = CopyUtils.copy(req, EbookInvolved.class);
-        ebookInvolved.setId(id);//将文章id改为小标题id
+    //新增是否可参与权限
+    public boolean insertInvolved(boolean isInvolved, long id) {
 
 
-        //如果存在  就修改
-        if (ebookInvolvedMapper.exitInvolved(ebookInvolved.getId()) > 0) {
-            return ebookInvolvedMapper.updateInvolved(ebookInvolved.getId(), ebookInvolved.isInvolved());
-        } else {
-            //如果不存在  就添加
-            return ebookInvolvedMapper.insertInvolved(ebookInvolved.getId(), ebookInvolved.isInvolved());
-        }
+        //如果不存在  就添加
+        return ebookInvolvedMapper.insertInvolved(id, isInvolved);
+    }
+    //修改
+    public boolean updateInvolved(boolean isInvolved, long id) {
+        //如果不存在  就添加
+        return ebookInvolvedMapper.updateInvolved(id, isInvolved);
+    }
 
+
+
+    //删除文章时删除对应数据
+    public boolean deleteInvolved(long id) {
+        return ebookInvolvedMapper.deleteInvolved(id);
     }
 }
