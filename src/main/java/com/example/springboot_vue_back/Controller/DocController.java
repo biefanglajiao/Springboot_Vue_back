@@ -6,6 +6,7 @@ import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.resp.DocQueryResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.service.DocService;
+import com.example.springboot_vue_back.service.EbookInvolvedService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ public class DocController {
 
     @Resource
     private DocService docService;
+
 
     @GetMapping("/list")//模糊查询书籍
     public ComminResp list(DocQueryReq req) {
@@ -69,6 +71,7 @@ public class DocController {
     public ComminResp save(@Valid @RequestBody DocSaveReq req) {//json格式的数据要用@RequestBody 注解  from表单格式 就可以直接提交
         ComminResp objectComminResp = new ComminResp<>();
         docService.save(req);
+
 
         return objectComminResp;
     }

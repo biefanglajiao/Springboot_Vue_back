@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot_vue_back.Mapper.EbookInvolvedMapper">
+    <select id="exitInvolved" resultType="java.lang.Integer">
+        select count(1)
+        from ebook_involved
+        where id = #{id}
+    </select>
+    <insert id="insertInvolved">
+        insert into ebook_involved (id,involved)
+        values (#{id}, #{involved})
+    </insert>
+<update id="updateInvolved">
+        update ebook_involved
+        set involved = #{involved}
+        where id = #{id}
+    </update>
+
+</mapper>

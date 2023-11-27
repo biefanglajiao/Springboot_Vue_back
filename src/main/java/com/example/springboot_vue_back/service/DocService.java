@@ -32,6 +32,8 @@ import java.util.List;
 @Service
 public class DocService {
     @Resource
+    private EbookInvolvedService ebookInvolvedService;
+    @Resource
     private DocMapper docMapper;
     @Resource
     private EbookMapperCust ebookMapperCust;
@@ -146,6 +148,7 @@ public class DocService {
             //不存在 新增
 
             doc.setId(snowFlake.nextId());//将生成的雪花算法赋给id
+            ebookInvolvedService.isInvolved(req,doc.getId());//判断是否可参与
            doc.setViewCount(0);
            doc.setVoteCount(0);
 
