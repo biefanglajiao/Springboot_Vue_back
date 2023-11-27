@@ -20,6 +20,8 @@ public class DocController {
 
     @Resource
     private DocService docService;
+    @Resource
+    private  EbookInvolvedService ebookInvolvedService;
 
 
     @GetMapping("/list")//模糊查询书籍
@@ -47,7 +49,10 @@ public class DocController {
     public ComminResp findContent(@PathVariable Long id) {
         ComminResp<String> objectComminResp = new ComminResp<>();
         String content = docService.findContent(id);
+        boolean b = ebookInvolvedService.selectInvolved(id);
         objectComminResp.setContent(content);
+        if (b){objectComminResp.setMessage("有效");}else {objectComminResp.setMessage("无效");}
+
         return objectComminResp;
     }
 

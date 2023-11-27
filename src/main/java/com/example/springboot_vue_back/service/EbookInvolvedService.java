@@ -40,4 +40,11 @@ public class EbookInvolvedService {
     public boolean deleteInvolved(long id) {
         return ebookInvolvedMapper.deleteInvolved(id);
     }
+
+    //查询是否可参与
+    public boolean selectInvolved(long id) {
+        EbookInvolved ebookInvolved = ebookInvolvedMapper.selectInvolved(id);
+        return ebookInvolved.isInvolved();
+
+    }
 }

@@ -19,5 +19,10 @@
         delete from ebook_involved
         where id = #{id}
     </delete>
+    <select id="selectInvolved" resultType="com.example.springboot_vue_back.domain.EbookInvolved">
+        select involved
+        from ebook_involved
+        where id = #{id}
+    </select>
 
 </mapper>

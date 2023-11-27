@@ -23,6 +23,7 @@ public class DocQueryResp {
     private Integer viewCount;
 
     private Integer voteCount;
+    private  boolean involved;
 
     public Long getId() {
         return id;
@@ -80,20 +81,25 @@ public class DocQueryResp {
         this.voteCount = voteCount;
     }
 
+    public boolean isInvolved() {
+        return involved;
+    }
+
+    public void setInvolved(boolean involved) {
+        this.involved = involved;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", ebookId=").append(ebookId);
-        sb.append(", parent=").append(parent);
-        sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
-        sb.append("]");
-        return sb.toString();
+        return "DocQueryResp{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                ", involved=" + involved +
+                '}';
     }
 }

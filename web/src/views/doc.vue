@@ -43,6 +43,15 @@
               </template>
               点赞:{{ doc.voteCount }}
             </a-button>
+            <a-form-item  v-show="ifshow">
+              <p>
+                <a-button type="primary" @click="add()">
+                  参与
+                </a-button>
+              </p>
+
+            </a-form-item>
+
           </div>
         </a-col>
 
@@ -52,6 +61,31 @@
 
 
   </a-layout>
+  <!--  关于反馈部分表单-->
+  <a-modal title="参与表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
+    <a-form :model="needhelp" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :layout="formLayout">
+      <a-form-item label="姓名">
+        <a-input v-model:value="needhelp.name"/>
+      </a-form-item>
+      <a-form-item label="地址">
+        <a-input v-model:value="needhelp.location"/>
+      </a-form-item>
+      <a-form-item label="邮箱">
+        <a-input v-model:value="needhelp.email"/>
+      </a-form-item>
+      <a-button type="primary" @click="getcheck(needhelp.email)">
+        获取验证码
+      </a-button>
+      <a-form-item label="TextArea">
+        <a-textarea v-model:value="needhelp.context" :rows="4"/>
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input type="text"/>
+      </a-form-item>
+
+
+    </a-form>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -70,6 +104,41 @@ export default defineComponent({
   name: "doc.vue",
 
   setup() {
+    //关于反馈相关
+    const modalLoading = ref<boolean>(false);
+    const modalVisible = ref<boolean>(false);
+    const needhelp = ref();
+    //保存帮助信息
+    const handleModalOk = () => {//保存
+      modalLoading.value = true;
+
+      axios.post("/needhelp/save", needhelp.value).then((response) => {
+        modalLoading.value = false;//有返回就关闭加载
+        const data = response.data;//data==common,resp
+        if (data.success) {
+          modalVisible.value = false;//关闭视图
+          //重新加载列表
+          handleQuery();
+        } else {
+          message.error(data.message);
+        }
+
+      });
+
+    };
+    //获取验证码
+    const getcheck = (email: string) => {
+      axios.get("/needhelp/getcheck/" + email).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success("验证码已发送");
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    //
     const doc = ref();
     doc.value = {};//当前选中的文档信息（题目 阅读数  点赞数等）
 
@@ -100,11 +169,21 @@ export default defineComponent({
     /***
      * @方法描述: 内容数据获取方法
      */
+        //是否展示
+    const ifshow = ref<boolean>(false);
     const handleQueryContent = (id: number) => {
       axios.get("/doc/find-content/" + id,).then((response) => {
 
         const data = response.data;
         if (data.success) {
+          //根据查询结果给是否展示  显示赋值
+          if (data.message == "有效") {
+
+            ifshow.value = true;
+          } else {
+            ifshow.value = false;
+
+          }
           html.value = data.content;
           console.log("内容数据", html.value);
         } else {
@@ -186,6 +265,15 @@ export default defineComponent({
       //点赞相关 ：
       size: ref<SizeType>('large'),
       IncreaseVoteView,
+
+//关于反馈相关
+      modalLoading,
+      modalVisible,
+      needhelp,
+      handleModalOk,
+      getcheck,
+      ifshow,
+
     }
   }
 })
@@ -262,10 +350,11 @@ export default defineComponent({
 .wangEditor-container ul, ol {
   margin: 10px 0 10px 20px;
 }
-/*//点赞按钮*/
- .up{
 
-   text-align: center;
- }
+/*//点赞按钮*/
+.up {
+
+  text-align: center;
+}
 
 </style>

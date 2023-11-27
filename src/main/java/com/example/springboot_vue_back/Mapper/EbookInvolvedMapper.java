@@ -1,5 +1,7 @@
 package com.example.springboot_vue_back.Mapper;
 
+import com.example.springboot_vue_back.domain.EbookInvolved;
+
 /**
  * @Author: 常兆海
  * @Description:
@@ -10,4 +12,5 @@ public interface EbookInvolvedMapper {
     boolean updateInvolved(Long id, boolean involved);
     boolean insertInvolved(Long id, boolean involved);
     boolean deleteInvolved(Long id);
+    EbookInvolved selectInvolved(Long id);
 }
