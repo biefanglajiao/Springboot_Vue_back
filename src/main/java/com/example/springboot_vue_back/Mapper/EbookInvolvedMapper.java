@@ -1,6 +1,7 @@
 package com.example.springboot_vue_back.Mapper;
 
 import com.example.springboot_vue_back.domain.EbookInvolved;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author: 常兆海
@@ -9,8 +10,8 @@ import com.example.springboot_vue_back.domain.EbookInvolved;
  **/
 public interface EbookInvolvedMapper {
     int exitInvolved(Long id);
-    boolean updateInvolved(Long id, boolean involved);
-    boolean insertInvolved(Long id, boolean involved);
+    boolean updateInvolved(@Param("id") Long id, @Param("involved") boolean involved, @Param("option") boolean option);
+    boolean insertInvolved(Long id, boolean involved,boolean option);
     boolean deleteInvolved(Long id);
     EbookInvolved selectInvolved(Long id);
 }

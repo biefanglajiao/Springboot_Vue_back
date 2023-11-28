@@ -9,7 +9,15 @@ public class EbookInvolved {
     private Long id;
     private boolean involved;
 
+    private boolean option;
 
+    public boolean isOption() {
+        return option;
+    }
+
+    public void setOption(boolean option) {
+        this.option = option;
+    }
 
     public boolean isInvolved() {
         return involved;

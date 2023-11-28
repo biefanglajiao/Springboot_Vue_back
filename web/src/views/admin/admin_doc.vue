@@ -125,6 +125,10 @@
                     <h3>是否开启可参与:        <a-switch v-model:checked="checked" />
 
                     </h3>
+                    <a-radio-group v-model:value="option" v-show="checked">
+                      <a-radio-button value="1">求助类</a-radio-button>
+                      <a-radio-button value="0">帮助类</a-radio-button>
+                    </a-radio-group>
 
                   </a-form-item>
                 </a-form>
@@ -174,6 +178,8 @@ export default defineComponent({
      * 可参与模块数据
      */
     const checked = ref<boolean>(false);
+    const option = ref({});//存表单数据
+    const docoptions = ref<boolean>(false);//表单数据改变
     /****
      * @富文本编辑相关 start
      */
@@ -278,6 +284,12 @@ export default defineComponent({
       doc.value.content = editor.getHtml();
       doc.value.ebookId = route.query.ebookId;
       doc.value.involved= checked.value;
+      if (option.value==1) {
+       doc.value.option=true;
+      }else {
+        doc.value.option=false;
+      }
+
       console.log("doc.value", doc.value);
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
@@ -285,6 +297,8 @@ export default defineComponent({
         if (data.success) {
           message.success("保存成功");
           doc.value = {};
+          checked.value=false;
+          valueHtml.value="";
 
           //重新加载列表
           handleQuery();
@@ -349,6 +363,7 @@ export default defineComponent({
     const add = () => {
       const editor = editorRef.value;
       checked.value=false;
+      option.value=false;
       editor.setHtml("");//单击编辑时清空富文本框
       modalVisible.value = true;
       doc.value = {
@@ -583,7 +598,8 @@ if (docslevel.value.length > 0) {
       handlePreviewContent,
       onDrawerClose,
     //可参与模块数据
-      checked
+      checked,
+      option,
     }
   }
 });

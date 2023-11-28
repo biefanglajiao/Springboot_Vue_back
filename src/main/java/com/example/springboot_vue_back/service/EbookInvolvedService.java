@@ -22,16 +22,17 @@ public class EbookInvolvedService {
 
 
     //新增是否可参与权限
-    public boolean insertInvolved(boolean isInvolved, long id) {
+    public boolean insertInvolved(boolean isInvolved, long id,boolean isOption) {
 
 
         //如果不存在  就添加
-        return ebookInvolvedMapper.insertInvolved(id, isInvolved);
+        return ebookInvolvedMapper.insertInvolved(id, isInvolved,isOption);
     }
     //修改
-    public boolean updateInvolved(boolean isInvolved, long id) {
+    public boolean updateInvolved(boolean isInvolved, long id,boolean isOption) {
+
         //如果不存在  就添加
-        return ebookInvolvedMapper.updateInvolved(id, isInvolved);
+        return ebookInvolvedMapper.updateInvolved(id, isInvolved,isOption);
     }
 
 

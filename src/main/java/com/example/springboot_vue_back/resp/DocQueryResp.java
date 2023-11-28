@@ -25,6 +25,16 @@ public class DocQueryResp {
     private Integer voteCount;
     private  boolean involved;
 
+    private boolean option;
+
+    public boolean isOption() {
+        return option;
+    }
+
+    public void setOption(boolean option) {
+        this.option = option;
+    }
+
     public Long getId() {
         return id;
     }
@@ -100,6 +110,7 @@ public class DocQueryResp {
                 ", viewCount=" + viewCount +
                 ", voteCount=" + voteCount +
                 ", involved=" + involved +
+                ", option=" + option +
                 '}';
     }
 }

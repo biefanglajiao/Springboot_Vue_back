@@ -152,7 +152,7 @@ public class DocService {
             //不存在 新增
 
             doc.setId(snowFlake.nextId());//将生成的雪花算法赋给id
-            ebookInvolvedService.insertInvolved(ebookInvolved.isInvolved(), doc.getId());//判断是否可参与
+            ebookInvolvedService.insertInvolved(ebookInvolved.isInvolved(), doc.getId() ,ebookInvolved.isOption());//判断是否可参与
             doc.setViewCount(0);
             doc.setVoteCount(0);
 
@@ -165,9 +165,10 @@ public class DocService {
             //更新
             docMapper.updateByPrimaryKey(doc);
 
-            System.out.println("doc.getId():" + doc.getId());
-            System.out.println("ebookInvolved.isInvolved():" + ebookInvolved.isInvolved());
-            ebookInvolvedService.updateInvolved(ebookInvolved.isInvolved(), req.getId());//判断是否可参与  更新部分
+//            System.out.println("doc.getId():" + doc.getId());
+//            System.out.println("ebookInvolved.isInvolved():" + ebookInvolved.isInvolved());
+//            System.out.println("ebookInvolved.isOption():" + ebookInvolved.isOption());
+            ebookInvolvedService.updateInvolved(ebookInvolved.isInvolved(), req.getId(),ebookInvolved.isOption());//判断是否可参与  更新部分
             int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
             if (count == 0) contentMapper.insert(content);
         }
