@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot_vue_back.Mapper.NeedhelpMapper">
+    <insert id="save"
+            parameterType="com.example.springboot_vue_back.domain.Needhelp">
+        insert into needhelp (context ,email,name,location ,`option`)
+        values (#{context},#{email},#{name},#{location},#{option})
+    </insert>
+
+</mapper>

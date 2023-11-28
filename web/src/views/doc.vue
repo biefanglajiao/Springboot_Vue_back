@@ -62,30 +62,30 @@
 
   </a-layout>
 
-  <a-modal title="参与表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk">
+  <a-modal title="参与表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk" >
               <a-form :model="needhelp" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
-                <a-form-item label="姓名">
+                <a-form-item label="姓名" :rules="[{ required: true, message: 'Please input your username!' }]" >
                   <a-input v-model:value="needhelp.name"/>
                 </a-form-item>
-                <a-form-item label="地址">
+                <a-form-item label="地址" >
                   <a-input v-model:value="needhelp.location"/>
                 </a-form-item>
-                <a-form-item label="邮箱">
-                  <a-input v-model:value="needhelp.email"/>
+                <a-form-item label="邮箱" :rules="[{ required: true, message: 'Please input your username!' }]" >
+                  <a-input  v-model:value="needhelp.email"/>
                 </a-form-item>
-                <a-form-item label="验证码">
-                  <a-input v-model:value="needhelp.email"/>
+                <a-form-item label="验证码" >
+                  <a-input v-model:value="needhelp.code"/>
                   <a-button type="primary" @click="getcheck(needhelp.email)">
                   获取验证码
                 </a-button>
                 </a-form-item>
 
-                <a-form-item label="TextArea">
-                  <a-textarea v-model:value="needhelp.context" :rows="4"/>
+                <a-form-item label="描述" >
+                  <a-textarea v-model:value="needhelp.context" :rows="4" placeholder="请简要描述">
+
+                  </a-textarea>
                 </a-form-item>
-                <a-form-item label="描述">
-                  <a-input type="text"/>
-                </a-form-item>
+
               </a-form>
             </a-modal>
   <!--  关于反馈部分表单-->
@@ -111,19 +111,37 @@ export default defineComponent({
     //关于反馈相关
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
-    const needhelp = ref({});
+    const needhelp = ref({
+      id: ref<number>(0),
+      name: ref<string>(""),
+      location: ref<string>(""),
+      email: ref<string>(""),
+      code: ref<string>(""),
+      context: ref<string>(""),
+    });
 
     //保存帮助信息
     const handleModalOk = () => {//保存
       modalLoading.value = true;
 
-      axios.post("/needhelp/save", needhelp.value).then((response) => {
+
+      axios.post("/doc/reply", needhelp.value).then((response) => {
         modalLoading.value = false;//有返回就关闭加载
         const data = response.data;//data==common,resp
         if (data.success) {
           modalVisible.value = false;//关闭视图
           //重新加载列表
           handleQuery();
+          message.success(data.message);
+          //清空表单
+          needhelp.value = {
+            id: 0,
+            name: "",
+            location: "",
+            email: "",
+            code: "",
+            context: "",
+          };
         } else {
           message.error(data.message);
         }
@@ -138,7 +156,8 @@ export default defineComponent({
     }
     //获取验证码
     const getcheck = (email: string) => {
-      axios.get("/needhelp/getcheck/" + email).then((response) => {
+      console.log("获取验证码", email);
+      axios.get("/doc/getcheck/" + email).then((response) => {
         const data = response.data;
         if (data.success) {
           message.success("验证码已发送");
@@ -182,6 +201,8 @@ export default defineComponent({
         //是否展示
     const ifshow = ref<boolean>(false);
     const handleQueryContent = (id: number) => {
+     // 给needhelp的id字段赋值
+      needhelp.value.id = id;
       axios.get("/doc/find-content/" + id,).then((response) => {
 
         const data = response.data;
