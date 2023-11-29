@@ -11,4 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface NeedhelpMapper {
     public int save(Needhelp needhelp);
+
+   public  int selectone(long docid,String email);
 }

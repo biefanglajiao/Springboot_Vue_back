@@ -112,17 +112,20 @@ export default defineComponent({
     const modalLoading = ref<boolean>(false);
     const modalVisible = ref<boolean>(false);
     const needhelp = ref({
+      docid: ref<number>(0),
       id: ref<number>(0),
       name: ref<string>(""),
       location: ref<string>(""),
       email: ref<string>(""),
       code: ref<string>(""),
       context: ref<string>(""),
+      aapproval: ref<boolean>(false),
     });
 
     //保存帮助信息
     const handleModalOk = () => {//保存
       modalLoading.value = true;
+      needhelp.value.docid = needhelp.value.id;
 
 
       axios.post("/doc/reply", needhelp.value).then((response) => {
@@ -141,6 +144,8 @@ export default defineComponent({
             email: "",
             code: "",
             context: "",
+            aapproval: false,
+            docid: 0,
           };
         } else {
           message.error(data.message);

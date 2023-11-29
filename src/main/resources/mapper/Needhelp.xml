@@ -3,8 +3,11 @@
 <mapper namespace="com.example.springboot_vue_back.Mapper.NeedhelpMapper">
     <insert id="save"
             parameterType="com.example.springboot_vue_back.domain.Needhelp">
-        insert into needhelp (context ,email,name,location ,`option`)
-        values (#{context},#{email},#{name},#{location},#{option})
+        insert into needhelp (context ,email,name,location ,`option`,id,docid,approval)
+        values (#{context},#{email},#{name},#{location},#{option},#{id},#{docid},#{approval})
     </insert>
+    <select id="selectone" resultType="integer" >
+        select count(*) from needhelp where  `docid`=#{docid} and `email`=#{email}
+    </select>
 
 </mapper>

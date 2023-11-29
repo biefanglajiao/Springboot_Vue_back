@@ -1,5 +1,8 @@
 package com.example.springboot_vue_back.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 /**
  * @Author: 常兆海
  * @Description:
@@ -12,6 +15,17 @@ public class Needhelp {
     private String name;
     private String location;
     private  boolean option;
+    private  boolean approval;
+
+    private long docid;//对应的文档id
+
+    public boolean isApproval() {
+        return approval;
+    }
+
+    public void setApproval(boolean approval) {
+        this.approval = approval;
+    }
 
     public boolean isOption() {
         return option;
@@ -19,18 +33,6 @@ public class Needhelp {
 
     public void setOption(boolean option) {
         this.option = option;
-    }
-
-    @Override
-    public String toString() {
-        return "Needhelp{" +
-                "id=" + id +
-                ", context='" + context + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", option=" + option +
-                '}';
     }
 
     public long getId() {
@@ -71,5 +73,27 @@ public class Needhelp {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public long getDocid() {
+        return docid;
+    }
+
+    public void setDocid(long docid) {
+        this.docid = docid;
+    }
+
+    @Override
+    public String toString() {
+        return "Needhelp{" +
+                "id=" + id +
+                ", context='" + context + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", option=" + option +
+                ", approval=" + approval +
+                ", docid=" + docid +
+                '}';
     }
 }

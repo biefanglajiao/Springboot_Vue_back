@@ -14,6 +14,7 @@ import com.example.springboot_vue_back.resp.UserLoginResp;
 import com.example.springboot_vue_back.service.DocService;
 import com.example.springboot_vue_back.service.EbookInvolvedService;
 import com.example.springboot_vue_back.service.MailSendService;
+import com.example.springboot_vue_back.service.NeedhelpService;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
@@ -42,6 +43,9 @@ public class DocController {
 
     @Resource
     private MailSendService mailSendService;
+
+    @Resource
+    private NeedhelpService needhelpService;
 
 
 
@@ -127,22 +131,42 @@ public ComminResp reply(@RequestBody @Valid NeedhelpReq req) {//json格式的数
     String codes = (String) redisTemplate.opsForValue().get(req.getCode().toString());
     System.out.println("codes——————————————————————————————————————————————"+codes);
     System.out.println("req.getEmail()——————————————————————————————————————————————"+req.getEmail());
-    //字符串切割
-    codes=codes.substring(1,codes.length()-1);//因为 mybatis里存的数据有双引号  所以要去掉
+
     if (codes==null){
         resp.setMessage("验证码已过期，请重新获取");
         resp.setSuccess(false);
         return resp;
-    }else if (!codes.equals(req.getEmail())){
+    }
+    //字符串切割
+    codes=codes.substring(1,codes.length()-1);//因为 mybatis里存的数据有双引号  所以要去掉
+    if (!codes.equals(req.getEmail())){
         resp.setMessage("验证码错误，请重新输入");
         resp.setSuccess(false);
         return resp;
     }
 
-    //todo 存储信息逻辑
+    Needhelp needhelp=new Needhelp();
+    needhelp.setDocid(docid);
+    needhelp.setContext(req.getContext());
+    needhelp.setEmail(req.getEmail());
+    needhelp.setName(req.getName());
+    needhelp.setLocation(req.getLocation());
+    needhelp.setOption(req.isOption());
+//    先查对应的文档id
+    int selectone = needhelpService.selectone(needhelp.getDocid(), needhelp.getEmail());
+    if (selectone!=0){
+        resp.setSuccess(false);
+        resp.setMessage("您已经参与过该文档的反馈");
+        return resp;
+    }
+
+    needhelpService.save(needhelp);
     //查对应的文档id  对应的参与种类
     //存储信息
     resp.setMessage("反馈成功");
+
+    //删除redis中的验证码
+    redisTemplate.delete(req.getCode().toString());
     return resp;
 }
 

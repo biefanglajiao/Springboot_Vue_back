@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 public class NeedhelpReq {
     @JsonSerialize(using = ToStringSerializer.class)
     private long id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private long docid;
     @NotNull(message = "【内容】不能为空")
     private String context ;
     @NotNull(message = "【邮箱】不能为空")
@@ -26,6 +28,23 @@ public class NeedhelpReq {
     private boolean option;
     @JsonSerialize(using = ToStringSerializer.class)
     private Long code;
+    private boolean approval;
+
+    public long getDocid() {
+        return docid;
+    }
+
+    public void setDocid(long docid) {
+        this.docid = docid;
+    }
+
+    public boolean isApproval() {
+        return approval;
+    }
+
+    public void setApproval(boolean approval) {
+        this.approval = approval;
+    }
 
     public Long getCode() {
         return code;
@@ -33,18 +52,6 @@ public class NeedhelpReq {
 
     public void setCode(Long code) {
         this.code = code;
-    }
-
-    @Override
-    public String toString() {
-        return "NeedhelpReq{" +
-                "id=" + id +
-                ", context='" + context + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", option=" + option +
-                '}';
     }
 
     public boolean isOption() {
@@ -93,5 +100,20 @@ public class NeedhelpReq {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "NeedhelpReq{" +
+                "id=" + id +
+                ", docid=" + docid +
+                ", context='" + context + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", option=" + option +
+                ", code=" + code +
+                ", approval=" + approval +
+                '}';
     }
 }
