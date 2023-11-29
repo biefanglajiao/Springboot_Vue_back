@@ -8,6 +8,7 @@ import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.service.NeedhelpService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,14 @@ public class ApprovalController {
     public ComminResp list() {
         ComminResp<List<ApprovalResp>> objectComminResp = new ComminResp<>();
        List<ApprovalResp> list = needhelpService.selectall();
+        objectComminResp.setContent(list);
+        return objectComminResp;
+    }
+    @GetMapping("/select/{email}")
+    public ComminResp select(@PathVariable String email) {
+        System.out.println("email:----------------------------"+email);
+        ComminResp<List<ApprovalResp>> objectComminResp = new ComminResp<>();
+        List<ApprovalResp> list = needhelpService.select(email);
         objectComminResp.setContent(list);
         return objectComminResp;
     }

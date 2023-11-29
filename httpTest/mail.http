@@ -1,3 +1,7 @@
+GET http://localhost:8080/approval/select/1341195069@qq.com
+Accept: application/json
+
+###
 GET http://localhost:8080/approval/list
 
 Accept: application/json

@@ -7,7 +7,7 @@
         where id = #{id}
     </select>
     <insert id="insertInvolved">
-        insert into ebook_involved (id,involved,option)
+        insert into ebook_involved (id,involved,`option`)
         values (#{id}, #{involved}, #{option})
     </insert>
 <update id="updateInvolved" >

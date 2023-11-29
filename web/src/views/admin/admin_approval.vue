@@ -10,9 +10,9 @@
             <a-space direction="vertical">
               <a-input-search
                   v-model:value="param.name"
-                  placeholder="名称"
+                  placeholder="根据邮箱名称查询"
                   enter-button
-                  @search="handleQuery({page:1,size:pagination.pageSize})"
+                  @search="select(param.name)"
               />
             </a-space>
           </a-form-item>
@@ -156,6 +156,26 @@ export default defineComponent({
         slots: {customRender: 'action'}
       }
     ];
+    /**
+     * c查询按钮方法
+     */
+    const select = (email:string) => {
+      if (Tool.isEmpty(email)) {
+       handleQueryCategory();
+        return;
+      }
+      axios.get("/approval/select/"+email).then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+
+          approvals.value = data.content;
+        } else {
+          message.error(data.message);
+
+        }
+      });
+    }
 
     /***
      * @方法描述: 数据查询方法
@@ -260,6 +280,7 @@ export default defineComponent({
 
 
       delet,
+      select
 
     }
   }

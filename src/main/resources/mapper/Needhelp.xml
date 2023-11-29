@@ -7,7 +7,10 @@
         values (#{context},#{email},#{name},#{location},#{option},#{id},#{docid},#{approval})
     </insert>
     <select id="selectone" resultType="integer" >
-        select count(*) from needhelp where  `docid`=#{docid} and `email`=#{email}
+        select a.*,b.name   as docname from needhelp a left join doc b on a.docid=b.id where  `email`=#{email} and `docid`=#{docid}
+    </select>
+ <select id="select" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+     select a.*,b.name   as docname from needhelp a left join doc b on a.docid=b.id where  `email`=#{email}
     </select>
 
     <delete id="delete" >

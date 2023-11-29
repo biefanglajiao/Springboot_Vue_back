@@ -40,6 +40,10 @@ public class NeedhelpService {
         System.out.println("docid:"+docid+"email:"+email);
         return  needhelpMapper.selectone(docid,email);
     }
+    public  List<ApprovalResp> select(String email){
+
+        return  needhelpMapper.select(email);
+    }
 
     //根据参与种类查询 已审批在前 未审批在后
     public List<ApprovalResp> selectallOrderByOptionAscApproval(boolean option) {
