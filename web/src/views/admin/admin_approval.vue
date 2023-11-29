@@ -52,11 +52,20 @@
                  :loading="loading"
                  @change="handleTableChange"
         >
+          <template v-slot:option="{text,record}">
+            <a-tag color="green" v-if="record.option==0">提供帮助</a-tag>
+            <a-tag color="yellow" v-if="record.option==1">寻求帮助</a-tag>
 
+          </template>
+          <template v-slot:approvaled="{text,record}">
+            <a-tag color="red" v-if="record.approval==0">未审批</a-tag>
+            <a-tag color="blue" v-if="record.approval==1">已审批</a-tag>
+
+          </template>
           <template v-slot:action="{text,record}">
 
             <a-space size="small">
-              <a-button type="primary" @click="approvaled(record)">
+              <a-button type="primary" @click="approvaled(record)" :disabled="record.approval">
                 审核通过
               </a-button>
               <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
@@ -105,55 +114,45 @@ export default defineComponent({
       {
         title: 'id',
         dataIndex: 'id',
-        key: 'id',
       },
 
       {
         title: '内容',
         dataIndex: 'context',
-        key: 'context',
       }, {
         title: '邮箱',
         dataIndex: 'email',
-        key: 'email',
       },
       {
         title: '姓名',
         dataIndex: 'name',
-        key: 'name',
       },
       {
         title: '居住地',
         dataIndex: 'location',
-        key: 'location',
       },
       {
         title: '种类',
-        dataIndex: 'option',
-        key: 'option',
+        slots: {customRender: 'option'}
       },
       {
         title: '是否审批',
-        dataIndex: 'approval',
-        key: 'approval',
+        slots: {customRender: 'approvaled'}
       },
 
       {
         title: '文档名称',
         dataIndex: 'docname',
-        key: 'docname',
       },
       {
         title: '文档id',
         dataIndex: 'docid',
-        key: 'docid',
 
       },
 
 
       {
         title: 'Action',
-        key: 'action',
         slots: {customRender: 'action'}
       }
     ];
