@@ -50,7 +50,7 @@
           <a-form-item v-show="ifshow">
             <h1>
               <a-button type="primary" @click="add()">
-                参与{{ modalVisible }}
+                参与
               </a-button>
             </h1>
 
@@ -61,7 +61,11 @@
     </a-layout-content>
 
   </a-layout>
-
+  <a-modal v-model:visible="open" title="提示" @ok="twoOk">
+    <h1 style="color: red">请注意: </h1>
+    <h2>     如果选择报名,经审核后有虚假信息,需要个人负责</h2>
+    <h2>     所以请认真填写!!!</h2>
+  </a-modal>
   <a-modal title="参与表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleModalOk" >
               <a-form :model="needhelp" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
                 <a-form-item label="姓名" :rules="[{ required: true, message: 'Please input your username!' }]" >
@@ -74,8 +78,15 @@
                   <a-input  v-model:value="needhelp.email"/>
                 </a-form-item>
                 <a-form-item label="验证码" >
+                  <a-tooltip placement="right">
+                    <template #title>
+                      <span>每五分钟可以获取一次</span>
+                    </template>
+                    <questionCircleTwoTone style="margin-left: 5px" />
+                  </a-tooltip>
                   <a-input v-model:value="needhelp.code"/>
-                  <a-button type="primary" @click="getcheck(needhelp.email)">
+                  <a-button type="primary"  :loading="iconLoading" @click="getcheck(needhelp.email)">
+
                   获取验证码
                 </a-button>
                 </a-form-item>
@@ -88,22 +99,28 @@
 
               </a-form>
             </a-modal>
+
   <!--  关于反馈部分表单-->
 
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref,} from "vue";
+import {createVNode, defineComponent, onMounted, ref,} from "vue";
 import axios from "axios";
-import {message} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import {Tool} from "@/utils/tool";
 import {useRoute} from "vue-router";
 import type {SizeType} from 'ant-design-vue/es/config-provider';
-import {LikeTwoTone} from '@ant-design/icons-vue';
-
+import {ExclamationCircleOutlined, LikeTwoTone} from '@ant-design/icons-vue';
+import {QuestionCircleTwoTone } from '@ant-design/icons-vue';
+interface DelayLoading {
+  delay: number;
+}
 export default defineComponent({
   components: {
     LikeTwoTone,
+    QuestionCircleTwoTone,
+
   },
   name: "doc.vue",
 
@@ -121,9 +138,16 @@ export default defineComponent({
       context: ref<string>(""),
       aapproval: ref<boolean>(false),
     });
-
+    //二次确认框
+    const open = ref<boolean>(false);
+    //二次确认框方法
+    const twoOk = () => {
+      modalVisible.value = true;
+      open.value = false;
+    }
     //保存帮助信息
     const handleModalOk = () => {//保存
+
       modalLoading.value = true;
       needhelp.value.docid = needhelp.value.id;
 
@@ -157,20 +181,31 @@ export default defineComponent({
      *     单击添加按钮
      */
     const add = () => {
-      modalVisible.value = true;
+      open.value = true;
     }
     //获取验证码
     const getcheck = (email: string) => {
-      console.log("获取验证码", email);
-      axios.get("/doc/getcheck/" + email).then((response) => {
-        const data = response.data;
-        if (data.success) {
-          message.success("验证码已发送");
-        } else {
-          message.error(data.message);
-        }
-      });
+      if (Tool.isEmpty(email)){
+        message.error("邮箱不能为空")
+      }else {
+        iconLoading.value = {delay: 10};
+
+        setTimeout(() => {
+          iconLoading.value = false;
+        }, 6000 * 5);
+        console.log("获取验证码", email);
+        axios.get("/doc/getcheck/" + email).then((response) => {
+          const data = response.data;
+          if (data.success) {
+            message.success("验证码已发送");
+          } else {
+            message.error(data.message);
+          }
+        });
+      }
     };
+    //参与按钮点击延时
+    const iconLoading = ref<boolean | DelayLoading>(false);
 
     //
     const doc = ref();
@@ -309,6 +344,10 @@ export default defineComponent({
       getcheck,
       ifshow,
       add,
+      twoOk,
+      open,
+      loading: ref(false),
+      iconLoading,
 
 
     }

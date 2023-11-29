@@ -27,6 +27,7 @@ public class NeedhelpReq {
     private String location;
     private boolean option;
     @JsonSerialize(using = ToStringSerializer.class)
+    @NotNull(message = "验证码不能为空")
     private Long code;
     private boolean approval;
 
