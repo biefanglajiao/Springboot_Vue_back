@@ -13,6 +13,7 @@ import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.resp.UserLoginResp;
 import com.example.springboot_vue_back.service.DocService;
 import com.example.springboot_vue_back.service.EbookInvolvedService;
+import com.example.springboot_vue_back.service.MailSendService;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
@@ -38,6 +39,9 @@ public class DocController {
     private  EbookInvolvedService ebookInvolvedService;
     @Resource
     private SnowFlake snowFlake;//雪花算
+
+    @Resource
+    private MailSendService mailSendService;
 
 
 
@@ -136,6 +140,8 @@ public ComminResp reply(@RequestBody @Valid NeedhelpReq req) {//json格式的数
     }
 
     //todo 存储信息逻辑
+    //查对应的文档id  对应的参与种类
+    //存储信息
     resp.setMessage("反馈成功");
     return resp;
 }
@@ -156,7 +162,7 @@ public ComminResp reply(@RequestBody @Valid NeedhelpReq req) {//json格式的数
 //       生成验证码五位数字的随机验证码
         String code = String.valueOf((int)((Math.random()*9+1)*10000));
 
-      //todo 发送邮件
+        mailSendService.sendMail(email,"参与系统绑定验证码","您的验证码为："+code);
         LOG.info("生成随机验证码： {}，并放入redis", code);
         System.out.println("生成随机验证码： {}，并放入redis——————————————————————————————————"+code);
 
