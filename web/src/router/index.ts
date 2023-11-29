@@ -26,6 +26,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_ebook.vue')
   } ,
   {
+    path: '/admin/approval',
+    name: 'AdminApproval',
+    meta:{loginRequire:true},
+    component: () => import(/* webpackChunkName: "about" */ '../views/admin/admin_approval.vue')
+  } ,
+  {
     path: '/admin/category',
     name: 'AdminCategory',
     meta:{loginRequire:true},
