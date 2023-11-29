@@ -10,4 +10,31 @@
         select count(*) from needhelp where  `docid`=#{docid} and `email`=#{email}
     </select>
 
+    <delete id="delete" >
+        delete from needhelp where `docid`=#{docid} and `email`=#{email}
+    </delete>
+      <update id="update" >
+        update needhelp set `approval`=#{approval} where `docid`=#{docid} and `email`=#{email} ;
+      </update>
+
+    <select id="selectall" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+        select a.*,b.name   as docname from needhelp a left join doc b on a.docid=b.id
+    </select>
+
+   <select id="selectallOrderByOptionAscApproval" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+       select a.*,b.name  as docname from needhelp a left join doc b on a.docid=b.id where `option`=#{option} order by `approval` asc
+   </select>
+
+    <select id="selectallOrderByOptionDescApproval" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+        select a.*,b.name  as docname from needhelp a left join doc b on a.docid=b.id where `option`=#{option} order by `approval` desc
+    </select>
+
+    <select id="selectallOrderByApprovalAscOption" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+        select a.*,b.name as docname from needhelp a left join doc b on a.docid=b.id where `approval`=#{approval} order by `option` asc
+    </select>
+
+    <select id="selectallOrderByApprovalDescOption" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+        select a.*,b.name  as docname from needhelp a left join doc b on a.docid=b.id where `approval`=#{approval} order by `option` desc
+    </select>
+
 </mapper>

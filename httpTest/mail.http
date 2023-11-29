@@ -1,3 +1,13 @@
+GET http://localhost:8080/approval/list
+
+Accept: application/json
+
+###
 GET http://localhost:8080/doc/getcheck/1341195069@qq.com
 ```
 
+```
+
+```
+
+```
