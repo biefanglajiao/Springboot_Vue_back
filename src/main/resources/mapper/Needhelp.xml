@@ -40,4 +40,8 @@
         select a.*,b.name  as docname from needhelp a left join doc b on a.docid=b.id where `approval`=#{approval} order by `option` desc
     </select>
 
+    <select id="selectbyid" resultType="com.example.springboot_vue_back.resp.ApprovalResp">
+        select a.*,b.name  as docname from needhelp a left join doc b on a.docid=b.id where a.id=#{id}
+    </select>
+
 </mapper>

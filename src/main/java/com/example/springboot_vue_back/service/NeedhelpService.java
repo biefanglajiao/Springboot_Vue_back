@@ -4,6 +4,7 @@ import com.example.springboot_vue_back.Mapper.NeedhelpMapper;
 import com.example.springboot_vue_back.Utils.SnowFlake;
 import com.example.springboot_vue_back.domain.Needhelp;
 import com.example.springboot_vue_back.resp.ApprovalResp;
+import com.example.springboot_vue_back.resp.ComminResp;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class NeedhelpService {
     private NeedhelpMapper needhelpMapper;
     @Resource
     private SnowFlake snowFlake;
-
+    @Resource
+    private MailSendService mailSendService;
     //    保存反馈数据
     public void save(Needhelp needhelp) {
 
@@ -70,5 +72,11 @@ public class NeedhelpService {
     public int delete(long id) {
        return needhelpMapper.delete(id);
     }
+   public ComminResp approvaled( long id){
+       ApprovalResp selectbyid = needhelpMapper.selectbyid(id);
+       needhelpMapper.update(selectbyid.getDocid(),selectbyid.getEmail(),true);
+       ComminResp comminResp = mailSendService.sendApprovalMail(selectbyid);
+       return comminResp;
 
+   }
 }

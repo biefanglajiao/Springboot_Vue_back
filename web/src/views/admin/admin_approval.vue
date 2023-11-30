@@ -38,7 +38,7 @@
           <template v-slot:action="{text,record}">
 
             <a-space size="small">
-              <a-button type="primary" @click="approvaled(record)" :disabled="record.approval">
+              <a-button type="primary" @click="approvaled(record.id)" :disabled="record.approval">
                 审核通过
               </a-button>
               <!--              原有的click方法到confirm里  cacel是放弃 这里不做操作  @cancel="cancel"-->
@@ -275,7 +275,24 @@ export default defineComponent({
       });
 
     };
-
+    /**
+     * 审批通过
+     */
+  const approvaled = (id:any) => {
+    console.log("aaaaasdaa aaaa", id);
+      axios.get("/approval/approvaled/"+id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success(data.message);
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+  }
 
     /**
      * @方法描述: 初始进入页面就查一次数据
@@ -309,6 +326,7 @@ export default defineComponent({
 
       delet,
       select,
+      approvaled
     }
   }
 });

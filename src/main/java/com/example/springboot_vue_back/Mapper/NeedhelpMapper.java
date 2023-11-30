@@ -23,6 +23,7 @@ public interface NeedhelpMapper {
     public int update(long docid,String email,boolean approval);
 
     public List<ApprovalResp> selectall();
+    public ApprovalResp selectbyid(long id);
 
     public List<ApprovalResp> selectallOrderByOptionAscApproval(boolean option);
 

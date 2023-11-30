@@ -52,4 +52,10 @@ public class ApprovalController {
         objectComminResp.setContent(list);
         return objectComminResp;
     }
+    @GetMapping("/approvaled/{id}")
+    public ComminResp approvaled(@PathVariable long id) {
+
+        ComminResp approvaled = needhelpService.approvaled(id);
+        return approvaled;
+    }
 }
