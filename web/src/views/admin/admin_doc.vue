@@ -179,7 +179,6 @@ export default defineComponent({
      */
     const checked = ref<boolean>(false);
     const option = ref({});//存表单数据
-    const docoptions = ref<boolean>(false);//表单数据改变
     /****
      * @富文本编辑相关 start
      */
