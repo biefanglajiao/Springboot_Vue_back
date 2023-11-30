@@ -202,11 +202,12 @@ export default defineComponent({
      * @方法描述: 删除按钮方法
      */
     const delet = (id: number) => {
-      axios.delete("/ebook/delete/" + id).then((response) => {
-
-        const data = response.data;
-
-
+      axios.delete("/approval/delete/" + id).then((response) => {
+        if (response.data.success) {
+          message.success(response.data.message);
+        } else {
+          message.error(response.data.message);
+        }
         //重新加载列表
         handleQuery({
           page: pagination.value.current,

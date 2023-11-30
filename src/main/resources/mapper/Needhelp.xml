@@ -14,7 +14,7 @@
     </select>
 
     <delete id="delete" >
-        delete from needhelp where `docid`=#{docid} and `email`=#{email}
+        delete from needhelp where `id`=#{id}
     </delete>
       <update id="update" >
         update needhelp set `approval`=#{approval} where `docid`=#{docid} and `email`=#{email} ;

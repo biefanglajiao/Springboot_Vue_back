@@ -18,7 +18,7 @@ public interface NeedhelpMapper {
    public  int selectone(long docid,String email);
    public  List<ApprovalResp> select(String email);
 
-    public int delete(long docid,String email);
+    public int delete(long id);
 
     public int update(long docid,String email,boolean approval);
 

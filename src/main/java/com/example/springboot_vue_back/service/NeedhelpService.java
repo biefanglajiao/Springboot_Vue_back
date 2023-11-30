@@ -67,8 +67,8 @@ public class NeedhelpService {
         return needhelpMapper.update(docid,email,approval);
     }
     //删除操作
-    public int delete(long docid,String email) {
-       return needhelpMapper.delete(docid,email);
+    public int delete(long id) {
+       return needhelpMapper.delete(id);
     }
 
 }

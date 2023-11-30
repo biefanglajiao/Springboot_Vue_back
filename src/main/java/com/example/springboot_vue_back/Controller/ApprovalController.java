@@ -7,10 +7,7 @@ import com.example.springboot_vue_back.resp.ComminResp;
 import com.example.springboot_vue_back.resp.PageResp;
 import com.example.springboot_vue_back.resp.UserQueryResp;
 import com.example.springboot_vue_back.service.NeedhelpService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -40,6 +37,12 @@ public class ApprovalController {
         ComminResp<List<ApprovalResp>> objectComminResp = new ComminResp<>();
         List<ApprovalResp> list = needhelpService.select(email);
         objectComminResp.setContent(list);
+        return objectComminResp;
+    }
+    @DeleteMapping("/delete/{id}")
+    public ComminResp delete(@PathVariable long id) {
+        ComminResp objectComminResp = new ComminResp<>();
+        needhelpService.delete(id);
         return objectComminResp;
     }
 }

@@ -219,7 +219,7 @@ export default defineComponent({
     const delet = (id: number) => {
       axios.delete("/user/delete/" + id).then((response) => {
 
-        const data = response.data;
+
 
 
         //重新加载列表
