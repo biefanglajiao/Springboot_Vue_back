@@ -45,4 +45,11 @@ public class ApprovalController {
         needhelpService.delete(id);
         return objectComminResp;
     }
+    @GetMapping("/selectallOrderByOptionAscApproval/{option}")
+    public ComminResp selectallOrderByOptionAscApproval(@PathVariable boolean option) {
+        ComminResp<List<ApprovalResp>> objectComminResp = new ComminResp<>();
+        List<ApprovalResp> list = needhelpService.selectallOrderByOptionAscApproval(option);
+        objectComminResp.setContent(list);
+        return objectComminResp;
+    }
 }

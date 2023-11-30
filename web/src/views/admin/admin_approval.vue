@@ -16,34 +16,7 @@
               />
             </a-space>
           </a-form-item>
-          <a-form-item>
-            <p>
-              <a-button type="primary" @click="add()">
-                根据参与种类查询 已审批在前 未审批在后
-              </a-button>
-            </p>
-          </a-form-item>
-          <a-form-item>
-            <p>
-              <a-button type="primary" @click="add()">
-                根据参与种类查询 已审批在后 未审批在前
-              </a-button>
-            </p>
-          </a-form-item>
-          <a-form-item>
-            <p>
-              <a-button type="primary" @click="add()">
-                根据审批结果查询 参与类在前 未参与类在后
-              </a-button>
-            </p>
-          </a-form-item>
-          <a-form-item>
-            <p>
-              <a-button type="primary" @click="add()">
-                根据审批结果查询 参与类在后 未参与类在前
-              </a-button>
-            </p>
-          </a-form-item>
+
         </a-form>
         <a-table :columns="columns"
                  :data-source="approvals"
@@ -97,6 +70,7 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from '@/utils/tool';
+import type {TableColumnsType} from 'ant-design-vue';
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -110,10 +84,32 @@ export default defineComponent({
       total: 0
     });
     const loading = ref(false);
-    const columns = [
+    type TableDataType = {
+      id: bigint;
+      context: string;
+      email: string;
+      name: string;
+      location: string;
+      option: boolean;
+      approval: number;
+      docname: string;
+      docid: bigint;
+
+    };
+    const columns: TableColumnsType = [
       {
         title: 'id',
         dataIndex: 'id',
+       // sorter: (a: TableDataType, b: TableDataType) => a.id - b.id,
+        sorter: (a: TableDataType, b: TableDataType) => {
+          if (a.id < b.id) {
+            return -1;
+          } else if (a.id > b.id) {
+            return 1;
+          } else {
+            return 0;
+          }
+        },
       },
 
       {
@@ -133,11 +129,33 @@ export default defineComponent({
       },
       {
         title: '种类',
-        slots: {customRender: 'option'}
+        slots: {customRender: 'option'},
+        filters: [
+          {
+            text: '提供帮助',
+            value: false,
+          },
+          {
+            text: '需要帮助',
+            value: true,
+          },
+        ],
+        onFilter: (value: any, record: any) => record.option === value,
       },
       {
         title: '是否审批',
-        slots: {customRender: 'approvaled'}
+        slots: {customRender: 'approvaled'},
+        filters: [
+          {
+            text: '已审批',
+            value: true,
+          },
+          {
+            text: '未审批',
+            value: false,
+          },
+        ],
+        onFilter: (value: any, record: any) => record.approval === value,
       },
 
       {
@@ -147,7 +165,15 @@ export default defineComponent({
       {
         title: '文档id',
         dataIndex: 'docid',
-
+        sorter: (a: TableDataType, b: TableDataType) => {
+          if (a.docid < b.docid) {
+            return -1;
+          } else if (a.docid > b.docid) {
+            return 1;
+          } else {
+            return 0;
+          }
+        },
       },
 
 
@@ -159,12 +185,12 @@ export default defineComponent({
     /**
      * c查询按钮方法
      */
-    const select = (email:string) => {
+    const select = (email: string) => {
       if (Tool.isEmpty(email)) {
-       handleQueryCategory();
+        handleQueryCategory();
         return;
       }
-      axios.get("/approval/select/"+email).then((response) => {
+      axios.get("/approval/select/" + email).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
@@ -269,6 +295,7 @@ export default defineComponent({
     });
 
 
+
     return {
       //列表
       param,
@@ -281,8 +308,7 @@ export default defineComponent({
 
 
       delet,
-      select
-
+      select,
     }
   }
 });
