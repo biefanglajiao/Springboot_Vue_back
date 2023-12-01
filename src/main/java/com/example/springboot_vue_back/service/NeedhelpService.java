@@ -40,7 +40,18 @@ public class NeedhelpService {
     //查询单个数据
     public  int selectone(long docid,String email){
         System.out.println("docid:"+docid+"email:"+email);
-        return  needhelpMapper.selectone(docid,email);
+        Integer selectone = needhelpMapper.selectone(docid, email);
+        /***
+         *   于sql语句未查询到数据，返回为null。而我们定义的dao层方法是返回为int，就会出现如下这样的提示：
+         *         return null from a method with a primitive return type (int).（试图从具有原始返回类型（int）的方法返回null）
+         *         Ingeter是int的包装类，int的初值为0，Ingeter的初值为null
+         */
+
+        if (selectone==null){
+            return 0;
+        }else {
+            return selectone;
+        }
     }
     public  List<ApprovalResp> select(String email){
 

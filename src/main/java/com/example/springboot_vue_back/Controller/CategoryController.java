@@ -19,12 +19,12 @@ public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
-    @GetMapping("/list")//模糊查询书籍
-    public ComminResp list( CategoryQueryReq req) {
-        ComminResp<PageResp<CategoryQueryResp>> objectComminResp = new ComminResp<>();
-        PageResp<CategoryQueryResp> list = categoryService.list(req);
-        objectComminResp.setContent(list);
-        return objectComminResp;
+        @GetMapping("/list")//模糊查询书籍
+        public ComminResp list( CategoryQueryReq req) {
+            ComminResp<PageResp<CategoryQueryResp>> objectComminResp = new ComminResp<>();
+            PageResp<CategoryQueryResp> list = categoryService.list(req);
+            objectComminResp.setContent(list);
+            return objectComminResp;
     }  @GetMapping("/all")//模糊查询书籍
     public ComminResp all() {
         ComminResp<List<CategoryQueryResp>> objectComminResp = new ComminResp<>();

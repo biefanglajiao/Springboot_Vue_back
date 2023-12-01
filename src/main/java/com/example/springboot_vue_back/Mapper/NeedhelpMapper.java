@@ -15,7 +15,7 @@ import java.util.List;
 public interface NeedhelpMapper {
     public int save(Needhelp needhelp);
 
-   public  int selectone(long docid,String email);
+   public  Integer selectone(long docid,String email);
    public  List<ApprovalResp> select(String email);
 
     public int delete(long id);

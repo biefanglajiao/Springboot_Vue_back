@@ -34,10 +34,7 @@ private SnowFlake   snowFlake;
     public void cron()  {
         //增加日志流水号
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
-
-
        LOG.info("更新电子书的附属信息：  开始 ");
-
        long start=System.currentTimeMillis();
          docMapperCust.updateEbookInfo();
          LOG.info("更新电子书的附属信息：  结束 ,耗时：{}毫秒",System.currentTimeMillis()-start);
